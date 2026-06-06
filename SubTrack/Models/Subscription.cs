@@ -7,6 +7,11 @@ public class Subscription : IValidatableObject
 {
     public int Id { get; set; }
 
+    [Required]
+    public string ApplicationUserId { get; set; } = string.Empty;
+
+    public ApplicationUser ApplicationUser { get; set; } = null!;
+
     [Required(ErrorMessage = "Subscription name is required.")]
     [StringLength(80, MinimumLength = 2, ErrorMessage = "Name must be between 2 and 80 characters.")]
     [Display(Name = "Name")]
