@@ -138,6 +138,26 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
         return true;
     }
 
+public async Task<int> SeedDemoDataAsync(string userId)
+{
+    var hasSubscriptions = await context.Subscriptions
+        .AnyAsync(subscription => subscription.ApplicationUserId == userId);
+
+    if (hasSubscriptions)
+    {
+        return 0;
+    }
+
+    var createdCount = 0;
+    foreach (var demoSubscription in DemoSubscriptionCatalog.Create(DateTime.Today))
+    {
+        await CreateAsync(userId, demoSubscription);
+        createdCount++;
+    }
+
+    return createdCount;
+}
+
     private static SubscriptionListItemViewModel MapToListItem(Subscription subscription)
     {
         return new SubscriptionListItemViewModel

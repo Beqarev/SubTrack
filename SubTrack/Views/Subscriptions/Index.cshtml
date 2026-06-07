@@ -65,7 +65,23 @@
     <section class="empty-state">
         <h2>No subscriptions found</h2>
         <p>Add your first subscription or adjust the filters.</p>
-        <a asp-action="Create" class="btn btn-primary">Add subscription</a>
+        <div class="heading-actions">
+            <div class="empty-actions">
+            <a asp-action="Create" class="btn btn-primary">Add subscription</a>
+            @if (Model.TotalCount == 0)
+            {
+                <form asp-action="SeedDemoData" method="post">
+                    <button type="submit" class="btn btn-outline-secondary">Load demo data</button>
+                </form>
+            }
+        </div>
+            @if (Model.TotalCount == 0)
+            {
+                <form asp-action="SeedDemoData" method="post">
+                    <button type="submit" class="btn btn-outline-secondary">Load demo data</button>
+                </form>
+            }
+        </div>
     </section>
 }
 else

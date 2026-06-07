@@ -1,0 +1,47 @@
+.heading-actions,
+.dashboard-actions,
+.empty-actions {
+  display: flex;
+  gap: .65rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.heading-actions form,
+.dashboard-actions form,
+.empty-actions form {
+  margin: 0;
+}
+
+.dashboard-empty p {
+  margin: 0 0 .75rem;
+}
+
+.empty-actions {
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.navbar-brand {
+  font-weight: 750;
+}
+
+.alert {
+  border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+  .heading-actions,
+  .dashboard-actions,
+  .empty-actions {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .heading-actions .btn,
+  .dashboard-actions .btn,
+  .empty-actions .btn {
+    width: 100%;
+  }
+}

@@ -120,6 +120,18 @@ public class SubscriptionsController(
         return RedirectToAction(nameof(Index));
     }
 
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> SeedDemoData()
+{
+    var createdCount = await subscriptionService.SeedDemoDataAsync(GetCurrentUserId());
+    TempData[createdCount == 0 ? "ErrorMessage" : "SuccessMessage"] = createdCount == 0
+        ? "Demo data is only added when your subscription list is empty."
+        : $"Added {createdCount} demo subscriptions.";
+
+    return RedirectToAction(nameof(Index));
+}
+
     private string GetCurrentUserId()
     {
         return userManager.GetUserId(User)

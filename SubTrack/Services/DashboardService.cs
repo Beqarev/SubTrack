@@ -58,7 +58,10 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                 .ToList(),
             UpcomingBills = upcomingBills,
             TrialAlerts = activeSubscriptions
-                .Where(subscription => subscription.IsFreeTrial && subscription.TrialDaysRemaining is not null)
+                .Where(subscription =>
+                    subscription.IsFreeTrial &&
+                    subscription.TrialEndDate is not null &&
+                    subscription.TrialEndDate.Value.Date >= today)
                 .OrderBy(subscription => subscription.TrialEndDate)
                 .Select(subscription => new TrialAlertViewModel
                 {

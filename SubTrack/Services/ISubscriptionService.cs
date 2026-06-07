@@ -20,4 +20,6 @@ public interface ISubscriptionService
     Task<bool> DeleteAsync(string userId, int subscriptionId);
 
     Task<bool> ToggleActivePausedAsync(string userId, int subscriptionId);
+
+    Task<int> SeedDemoDataAsync(string userId);
 }

@@ -1,8 +1,14 @@
-﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var isSignedIn = SignInManager.IsSignedIn(User);
+    var userName = User.Identity?.Name ?? "Guest";
+    var userInitial = string.IsNullOrWhiteSpace(userName) ? "S" : userName.Trim()[0].ToString().ToUpperInvariant();
+}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="midnight">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -11,69 +17,88 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/subscriptions.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/stage6-polish.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/SubTrack.styles.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/app-shell.css" asp-append-version="true"/>
 </head>
 <body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SubTrack</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Subscriptions" asp-action="Index">Subscriptions</a>
-                        </li>
-                    }
-                </ul>
-                <ul class="navbar-nav">
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <li class="nav-item">
-                            <span class="nav-link text-dark">@User.Identity?.Name</span>
-                        </li>
-                        <li class="nav-item">
-                            <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-                            </form>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
-                        </li>
-                    }
-                </ul>
-            </div>
+<div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+        <a class="brand-lockup" asp-controller="Home" asp-action="Index">
+            <span class="brand-mark">S</span>
+            <span>
+                <span class="brand-title">SubTrack</span>
+                <span class="brand-subtitle">Smart Expenses</span>
+            </span>
+        </a>
+
+        <nav class="sidebar-nav">
+            <a class="sidebar-link @(controller == "Home" ? "active" : string.Empty)" asp-controller="Home" asp-action="Index">
+                <span class="nav-left"><span class="nav-icon">D</span> Dashboard</span>
+            </a>
+
+            @if (isSignedIn)
+            {
+                <a class="sidebar-link @(controller == "Subscriptions" ? "active" : string.Empty)" asp-controller="Subscriptions" asp-action="Index">
+                    <span class="nav-left"><span class="nav-icon">S</span> Subscriptions</span>
+                </a>
+                <a class="sidebar-link" href="#" aria-disabled="true">
+                    <span class="nav-left"><span class="nav-icon">A</span> Analytics</span>
+                </a>
+                <a class="sidebar-link" href="#" aria-disabled="true">
+                    <span class="nav-left"><span class="nav-icon">!</span> Alerts</span>
+                    <span class="nav-badge">2</span>
+                </a>
+                <a class="sidebar-link" href="#" aria-disabled="true">
+                    <span class="nav-left"><span class="nav-icon">*</span> Settings</span>
+                </a>
+            }
+            else
+            {
+                <a class="sidebar-link @(controller == "Account" ? "active" : string.Empty)" asp-controller="Account" asp-action="Login">
+                    <span class="nav-left"><span class="nav-icon">L</span> Login</span>
+                </a>
+                <a class="sidebar-link" asp-controller="Account" asp-action="Register">
+                    <span class="nav-left"><span class="nav-icon">+</span> Register</span>
+                </a>
+            }
+        </nav>
+
+        <div class="sidebar-footer">
+            @if (isSignedIn)
+            {
+                <div class="trial-mini-card">
+                    <span>Trial monitoring</span>
+                    <strong>Free trial alerts</strong>
+                    <em>Watch countdowns</em>
+                </div>
+                <div class="user-chip">
+                    <span class="user-avatar">@userInitial</span>
+                    <span>@userName</span>
+                </div>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit" class="sidebar-button">Logout</button>
+                </form>
+            }
+            else
+            {
+                <div class="trial-mini-card">
+                    <span>Get started</span>
+                    <strong>Track subscriptions</strong>
+                    <em>No surprises</em>
+                </div>
+            }
         </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
+    </aside>
+
+    <main class="app-main">
+        <div class="content-frame">
+            @RenderBody()
+        </div>
     </main>
 </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2026 - SubTrack - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-    </div>
-</footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
