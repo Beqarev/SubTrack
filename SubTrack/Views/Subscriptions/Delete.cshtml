@@ -1,0 +1,32 @@
+@model SubscriptionFormViewModel
+
+@{
+    ViewData["Title"] = "Delete Subscription";
+}
+
+<section class="page-heading">
+    <div>
+        <p class="section-eyebrow">Confirm delete</p>
+        <h1>Delete @Model.Name</h1>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
+</section>
+
+<section class="delete-panel">
+    <p>
+        This will permanently remove <strong>@Model.Name</strong> from your subscriptions.
+    </p>
+    <dl class="row mb-0">
+        <dt class="col-sm-3">Price</dt>
+        <dd class="col-sm-9">@Model.Price.ToString("0.00") @Model.CurrencyCode / @Model.BillingCycle</dd>
+        <dt class="col-sm-3">Next billing date</dt>
+        <dd class="col-sm-9">@Model.NextBillingDate.ToString("MMM d, yyyy")</dd>
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9">@Model.Status</dd>
+    </dl>
+</section>
+
+<form asp-action="Delete" asp-route-id="@Model.Id" method="post" class="form-footer">
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    <button type="submit" class="btn btn-danger">Delete subscription</button>
+</form>

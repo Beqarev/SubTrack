@@ -1,0 +1,17 @@
+<script>
+    (() => {
+        const trialToggle = document.getElementById("IsFreeTrial");
+        const trialFields = document.getElementById("trialFields");
+
+        if (!trialToggle || !trialFields) {
+            return;
+        }
+
+        const syncTrialFields = () => {
+            trialFields.hidden = !trialToggle.checked;
+        };
+
+        trialToggle.addEventListener("change", syncTrialFields);
+        syncTrialFields();
+    })();
+</script>

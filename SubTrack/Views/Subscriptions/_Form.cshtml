@@ -1,0 +1,104 @@
+@model SubscriptionFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="form-grid">
+    <div>
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" autocomplete="off"/>
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Category" class="form-label"></label>
+        <select asp-for="Category" asp-items="Html.GetEnumSelectList<SubscriptionCategory>()" class="form-select"></select>
+        <span asp-validation-for="Category" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" inputmode="decimal"/>
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="CurrencyCode" class="form-label"></label>
+        <input asp-for="CurrencyCode" class="form-control text-uppercase" maxlength="3"/>
+        <span asp-validation-for="CurrencyCode" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="BillingCycle" class="form-label"></label>
+        <select asp-for="BillingCycle" asp-items="Html.GetEnumSelectList<BillingCycle>()" class="form-select"></select>
+        <span asp-validation-for="BillingCycle" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="PaymentMethod" class="form-label"></label>
+        <select asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()" class="form-select"></select>
+        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="Status" class="form-label"></label>
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<SubscriptionStatus>()" class="form-select"></select>
+        <span asp-validation-for="Status" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="ReminderDaysBeforeRenewal" class="form-label"></label>
+        <input asp-for="ReminderDaysBeforeRenewal" class="form-control" inputmode="numeric"/>
+        <span asp-validation-for="ReminderDaysBeforeRenewal" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="StartDate" class="form-label"></label>
+        <input asp-for="StartDate" class="form-control"/>
+        <span asp-validation-for="StartDate" class="text-danger"></span>
+    </div>
+
+    <div>
+        <label asp-for="NextBillingDate" class="form-label"></label>
+        <input asp-for="NextBillingDate" class="form-control"/>
+        <span asp-validation-for="NextBillingDate" class="text-danger"></span>
+    </div>
+
+    <div class="form-grid-full">
+        <label asp-for="WebsiteUrl" class="form-label"></label>
+        <input asp-for="WebsiteUrl" class="form-control" autocomplete="url"/>
+        <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
+    </div>
+
+    <div class="form-grid-full">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="trial-panel">
+    <div class="form-check form-switch">
+        <input asp-for="IsFreeTrial" class="form-check-input" role="switch"/>
+        <label asp-for="IsFreeTrial" class="form-check-label"></label>
+    </div>
+
+    <div id="trialFields" class="form-grid mt-3">
+        <div>
+            <label asp-for="TrialStartDate" class="form-label"></label>
+            <input asp-for="TrialStartDate" class="form-control"/>
+            <span asp-validation-for="TrialStartDate" class="text-danger"></span>
+        </div>
+
+        <div>
+            <label asp-for="TrialEndDate" class="form-label"></label>
+            <input asp-for="TrialEndDate" class="form-control"/>
+            <span asp-validation-for="TrialEndDate" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <label asp-for="Notes" class="form-label"></label>
+    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="Notes" class="text-danger"></span>
+</div>

@@ -10,6 +10,7 @@
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/subscriptions.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/SubTrack.styles.css" asp-append-version="true"/>
 </head>
 <body>
@@ -29,6 +30,12 @@
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                     </li>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Subscriptions" asp-action="Index">Subscriptions</a>
+                        </li>
+                    }
                 </ul>
                 <ul class="navbar-nav">
                     @if (SignInManager.IsSignedIn(User))
