@@ -1,0 +1,153 @@
+@model AnalyticsViewModel
+
+@{
+    ViewData["Title"] = "Analytics";
+    var maxTrend = Model.MonthlyTrend.Count == 0 ? 0 : Model.MonthlyTrend.Max(point => point.MonthlySpend);
+    var chartTop = 18d;
+    var chartBottom = 176d;
+    var chartLeft = 12d;
+    var chartRight = 668d;
+    var pointCount = Math.Max(1, Model.MonthlyTrend.Count - 1);
+    var chartPoints = string.Join(" ", Model.MonthlyTrend.Select((point, index) =>
+    {
+        var x = chartLeft + ((chartRight - chartLeft) / pointCount * index);
+        var y = maxTrend == 0 ? chartBottom : chartBottom - ((double)(point.MonthlySpend / maxTrend) * (chartBottom - chartTop));
+        return $"{Math.Round(x, 2).ToString(System.Globalization.CultureInfo.InvariantCulture)},{Math.Round(y, 2).ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+    }));
+    var areaPoints = string.IsNullOrWhiteSpace(chartPoints) ? string.Empty : $"{chartLeft.ToString(System.Globalization.CultureInfo.InvariantCulture)},{chartBottom.ToString(System.Globalization.CultureInfo.InvariantCulture)} {chartPoints} {chartRight.ToString(System.Globalization.CultureInfo.InvariantCulture)},{chartBottom.ToString(System.Globalization.CultureInfo.InvariantCulture)}";
+}
+
+<section class="analytics-page">
+    <div class="analytics-heading">
+        <div>
+            <h1>Analytics</h1>
+            <p>Understand where your subscription money goes month over month.</p>
+        </div>
+        <span class="analytics-range">Last 7 months</span>
+    </div>
+
+    <section class="analytics-kpis" aria-label="Analytics summary">
+        <article class="analytics-kpi-card">
+            <span>Avg Monthly</span>
+            <strong>@Model.AverageMonthlySpend.ToString("C")</strong>
+            <em>@(Model.HasData ? "Normalized cost" : "No active spend")</em>
+        </article>
+        <article class="analytics-kpi-card">
+            <span>Highest Month</span>
+            <strong>@Model.HighestMonthlySpend.ToString("C")</strong>
+            <em>@(string.IsNullOrWhiteSpace(Model.HighestMonthLabel) ? "No month yet" : Model.HighestMonthLabel)</em>
+        </article>
+        <article class="analytics-kpi-card">
+            <span>Annualized</span>
+            <strong>@Model.AnnualizedSpend.ToString("C0")</strong>
+            <em>Based on active plans</em>
+        </article>
+    </section>
+
+    @if (!Model.HasData)
+    {
+        <section class="analytics-empty">
+            <h2>No analytics yet</h2>
+            <p>Add active subscriptions to generate monthly trends, category split, and service rankings.</p>
+            <a asp-controller="Subscriptions" asp-action="Create" class="analytics-primary-link">+ New Subscription</a>
+        </section>
+    }
+    else
+    {
+        <section class="analytics-grid">
+            <article class="analytics-panel analytics-trend-panel">
+                <div class="panel-heading">
+                    <div>
+                        <h2>Monthly spend trend</h2>
+                        <p>Active subscriptions, normalized monthly cost</p>
+                    </div>
+                    <span class="trend-badge">Trending</span>
+                </div>
+
+                <div class="trend-chart" aria-label="Monthly spend trend chart">
+                    <svg viewBox="0 0 680 210" role="img" aria-label="Monthly subscription spend trend">
+                        <defs>
+                            <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0" stop-color="#6d70ff" stop-opacity="0.46" />
+                                <stop offset="1" stop-color="#6d70ff" stop-opacity="0.05" />
+                            </linearGradient>
+                        </defs>
+                        <polygon points="@areaPoints" fill="url(#trendFill)" />
+                        <polyline points="@chartPoints" fill="none" stroke="#7275ff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+                        @foreach (var point in chartPoints.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            var pair = point.Split(',');
+                            <circle cx="@pair[0]" cy="@pair[1]" r="4" fill="#f4f5ff" stroke="#7275ff" stroke-width="3" />
+                        }
+                    </svg>
+                    <div class="trend-labels">
+                        @foreach (var point in Model.MonthlyTrend)
+                        {
+                            <span>@point.Label</span>
+                        }
+                    </div>
+                </div>
+            </article>
+
+            <article class="analytics-panel category-panel">
+                <div class="panel-heading compact">
+                    <div>
+                        <h2>Category split</h2>
+                        <p>@Model.CurrentMonthlySpend.ToString("C") / month</p>
+                    </div>
+                </div>
+                <div class="category-stack" aria-hidden="true">
+                    @foreach (var category in Model.CategorySplit)
+                    {
+                        <span style="width: @category.Percentage.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></span>
+                    }
+                </div>
+                <div class="category-list">
+                    @foreach (var category in Model.CategorySplit)
+                    {
+                        <div class="category-row">
+                            <span>@DisplayName(category.Category)</span>
+                            <strong>@category.MonthlySpend.ToString("C")</strong>
+                        </div>
+                    }
+                </div>
+            </article>
+        </section>
+
+        <section class="analytics-panel top-services-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Top spend services</h2>
+                    <p>Your highest normalized monthly costs</p>
+                </div>
+                <a asp-controller="Subscriptions" asp-action="Index" class="analytics-panel-link">View all</a>
+            </div>
+            <div class="top-services-list">
+                @foreach (var service in Model.TopServices)
+                {
+                    var initial = string.IsNullOrWhiteSpace(service.Name) ? "S" : service.Name.Trim()[0].ToString().ToUpperInvariant();
+                    <a asp-controller="Subscriptions" asp-action="Edit" asp-route-id="@service.SubscriptionId" class="top-service-row">
+                        <span class="top-service-avatar">@initial</span>
+                        <span class="top-service-main">
+                            <strong>@service.Name</strong>
+                            <span class="top-service-bar"><span style="width: @service.ShareOfHighest.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></span></span>
+                        </span>
+                        <span class="top-service-cost">@service.MonthlyCost.ToString("C")/mo</span>
+                    </a>
+                }
+            </div>
+        </section>
+    }
+</section>
+
+@functions {
+    private static string DisplayName(Enum value)
+    {
+        var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+        var display = member?.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+            .OfType<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+            .FirstOrDefault();
+
+        return display?.Name ?? value.ToString();
+    }
+}

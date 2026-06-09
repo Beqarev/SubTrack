@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/subscriptions.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/analytics.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/stage6-polish.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/SubTrack.styles.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/app-shell.css" asp-append-version="true"/>
@@ -43,7 +44,7 @@
                 <a class="sidebar-link @(controller == "Subscriptions" ? "active" : string.Empty)" asp-controller="Subscriptions" asp-action="Index">
                     <span class="nav-left"><span class="nav-icon">S</span> Subscriptions</span>
                 </a>
-                <a class="sidebar-link" href="#" aria-disabled="true">
+                <a class="sidebar-link @(controller == "Analytics" ? "active" : string.Empty)" asp-controller="Analytics" asp-action="Index">
                     <span class="nav-left"><span class="nav-icon">A</span> Analytics</span>
                 </a>
                 <a class="sidebar-link" href="#" aria-disabled="true">
