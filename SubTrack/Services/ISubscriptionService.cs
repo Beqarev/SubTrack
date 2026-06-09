@@ -9,7 +9,8 @@ public interface ISubscriptionService
         string userId,
         string? searchTerm = null,
         SubscriptionCategory? category = null,
-        SubscriptionStatus? status = null);
+        SubscriptionStatus? status = null,
+        bool trialOnly = false);
 
     Task<SubscriptionFormViewModel?> GetFormModelAsync(string userId, int subscriptionId);
 

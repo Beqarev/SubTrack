@@ -12,7 +12,25 @@ public class SubscriptionIndexViewModel
 
     public SubscriptionStatus? Status { get; set; }
 
-    public int TotalCount => Subscriptions.Count;
+    public bool TrialOnly { get; set; }
+
+    public int AllCount { get; set; }
+
+    public int ActiveCount { get; set; }
+
+    public int PausedCount { get; set; }
+
+    public int TrialCount { get; set; }
+
+    public int TotalCount => AllCount;
+
+    public int FilteredCount => Subscriptions.Count;
+
+    public bool HasFilters =>
+        !string.IsNullOrWhiteSpace(SearchTerm) ||
+        Category is not null ||
+        Status is not null ||
+        TrialOnly;
 
     public decimal ActiveMonthlySpend => Subscriptions
         .Where(subscription => subscription.Status == SubscriptionStatus.Active)

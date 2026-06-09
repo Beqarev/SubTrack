@@ -1,16 +1,16 @@
 @model DashboardViewModel?
 
 @{
-    ViewData["Title"] = User.Identity?.IsAuthenticated == true ? "Dashboard" : "Home";
+    ViewData["Title"] = User.Identity?.IsAuthenticated == true ? "Overview" : "Home";
 }
 
 @if (User.Identity?.IsAuthenticated != true || Model is null)
 {
-    <section class="guest-panel">
+    <section class="guest-panel dashboard-auth-card">
         <p class="section-eyebrow">Smart Subscription Management</p>
-        <h1>Track renewals, trials, and recurring spend in one focused dashboard.</h1>
+        <h1>Track recurring services, free trials, and monthly commitments.</h1>
         <p class="text-muted mb-0">
-            Create an account or log in to manage subscriptions, watch upcoming bills, and catch free trials before they convert.
+            Sign in to see your dark dashboard, manage subscriptions, and catch trial conversions before they charge.
         </p>
         <div class="guest-actions">
             <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Create account</a>
@@ -23,15 +23,16 @@ else
     var maxCategorySpend = Model.CategorySpending.Any()
         ? Model.CategorySpending.Max(category => category.MonthlySpend)
         : 0m;
+    var topCategories = Model.CategorySpending.Take(5).ToList();
+    var activeRows = Model.ActiveSubscriptions.Take(8).ToList();
 
-    <section class="dashboard-hero">
+    <section class="overview-header">
         <div>
-            <p class="section-eyebrow">Smart Dashboard</p>
-            <h1>Subscription command center</h1>
-            <p>Monitor recurring spend, upcoming renewals, and free-trial countdowns from your active subscriptions.</p>
+            <h1>Overview</h1>
+            <p>Track your monthly commitments and trials.</p>
         </div>
         <div class="dashboard-actions">
-            <a asp-controller="Subscriptions" asp-action="Create" class="btn btn-primary">Add subscription</a>
+            <a asp-controller="Subscriptions" asp-action="Create" class="btn btn-primary">Add Subscription</a>
             @if (Model.ActiveSubscriptionCount == 0 && Model.PausedSubscriptionCount == 0)
             {
                 <form asp-controller="Subscriptions" asp-action="SeedDemoData" method="post">
@@ -41,35 +42,39 @@ else
         </div>
     </section>
 
-    <section class="kpi-grid" aria-label="Dashboard key metrics">
-        <div class="kpi-card">
-            <span>Total monthly spend</span>
+    <section class="overview-kpis" aria-label="Dashboard key metrics">
+        <article class="overview-card kpi-card-v2">
+            <span>Monthly spend</span>
             <strong>@Model.TotalMonthlySpend.ToString("C")</strong>
-        </div>
-        <div class="kpi-card">
-            <span>Projected annual spend</span>
-            <strong>@Model.ProjectedAnnualSpend.ToString("C")</strong>
-        </div>
-        <div class="kpi-card">
-            <span>Active subscriptions</span>
-            <strong>@Model.ActiveSubscriptionCount</strong>
-        </div>
-        <div class="kpi-card">
+            <em class="positive">Active monthly total</em>
+        </article>
+        <article class="overview-card kpi-card-v2">
+            <span>Projected annual</span>
+            <strong>@Model.ProjectedAnnualSpend.ToString("C0")</strong>
+            <em>Based on active plans</em>
+        </article>
+        <article class="overview-card kpi-card-v2">
             <span>Upcoming bills</span>
             <strong>@Model.UpcomingBillCount</strong>
-        </div>
+            <em>Next 30 days</em>
+        </article>
+        <article class="overview-card kpi-card-v2 kpi-alert-card">
+            <span>Trial alerts</span>
+            <strong>@Model.TrialAlerts.Count</strong>
+            <em class="warning">Needs attention</em>
+        </article>
     </section>
 
-    <section class="dashboard-grid">
-        <div class="dashboard-panel">
-            <div class="panel-heading">
-                <h2>Category spending</h2>
-                <span class="muted-small">Monthly equivalent</span>
+    <section class="overview-grid">
+        <article class="overview-card category-panel">
+            <div class="panel-heading-v2">
+                <h2>Spend by Category</h2>
+                <span>Last 30 Days</span>
             </div>
 
-            @if (Model.CategorySpending.Count == 0)
+            @if (topCategories.Count == 0)
             {
-                <div class="dashboard-empty">
+                <div class="dashboard-empty dark-empty">
                     <p>Add active subscriptions to see category spend breakdowns.</p>
                     <form asp-controller="Subscriptions" asp-action="SeedDemoData" method="post">
                         <button type="submit" class="btn btn-sm btn-outline-secondary">Load demo data</button>
@@ -78,99 +83,115 @@ else
             }
             else
             {
-                <div class="bar-list">
-                    @foreach (var category in Model.CategorySpending)
+                <div class="category-bars-v2">
+                    @foreach (var category in topCategories)
                     {
                         var width = maxCategorySpend == 0 ? 0 : Math.Round(category.MonthlySpend / maxCategorySpend * 100m, 0);
-                        <div class="category-row">
-                            <div class="category-row-header">
-                                <strong>@category.Category</strong>
-                                <span class="muted-small">@category.MonthlySpend.ToString("C") · @category.SubscriptionCount item(s)</span>
+                        <div class="category-row-v2">
+                            <div class="category-meta-v2">
+                                <span>@category.Category</span>
+                                <strong>@category.MonthlySpend.ToString("C")</strong>
                             </div>
-                            <div class="category-track" aria-hidden="true">
-                                <div class="category-fill" style="width: @width%"></div>
+                            <div class="category-track-v2" aria-hidden="true">
+                                <div class="category-fill-v2" style="width: @width%"></div>
                             </div>
                         </div>
                     }
                 </div>
             }
-        </div>
+        </article>
 
-        <div class="dashboard-panel">
-            <div class="panel-heading">
-                <h2>Upcoming bills</h2>
-                <a asp-controller="Subscriptions" asp-action="Index" class="btn btn-sm btn-outline-secondary">View all</a>
-            </div>
-
-            @if (Model.UpcomingBills.Count == 0)
-            {
-                <div class="dashboard-empty">No active bills are due in the next 30 days.</div>
-            }
-            else
-            {
-                <div class="bill-list">
-                    @foreach (var bill in Model.UpcomingBills)
-                    {
-                        <div class="bill-row">
-                            <div>
-                                <strong>@bill.SubscriptionName</strong>
-                                <span class="muted-small">@bill.NextBillingDate.ToString("MMM d, yyyy") · @bill.DaysUntilBilling days</span>
-                            </div>
-                            <span>@bill.Amount.ToString("0.00") @bill.CurrencyCode</span>
-                        </div>
-                    }
-                </div>
-            }
-        </div>
-
-        <div class="dashboard-panel">
-            <div class="panel-heading">
-                <h2>Free trial alerts</h2>
-                <span class="muted-small">Conversion countdown</span>
+        <article class="overview-card smart-alerts-panel">
+            <div class="panel-heading-v2">
+                <h2>Smart Alerts</h2>
             </div>
 
             @if (Model.TrialAlerts.Count == 0)
             {
-                <div class="dashboard-empty">No active free trials are being tracked.</div>
+                <div class="dashboard-empty dark-empty">No active trial alerts right now.</div>
             }
             else
             {
-                <div class="trial-list">
-                    @foreach (var trial in Model.TrialAlerts)
+                <div class="smart-alert-list">
+                    @foreach (var trial in Model.TrialAlerts.Take(2))
                     {
-                        <div class="trial-row">
+                        <div class="smart-alert-card @(trial.IsUrgent ? "urgent" : string.Empty)">
                             <div>
                                 <strong>@trial.SubscriptionName</strong>
-                                <span class="muted-small">Converts @trial.TrialEndDate.ToString("MMM d, yyyy")</span>
+                                <span>Converts on @trial.TrialEndDate.ToString("MMM d")</span>
+                                <em>@trial.DaysRemaining day@(trial.DaysRemaining == 1 ? string.Empty : "s") left</em>
                             </div>
-                            <span class="countdown-pill @(trial.IsUrgent ? "urgent" : string.Empty)">
-                                @trial.DaysRemaining day@(trial.DaysRemaining == 1 ? string.Empty : "s")
-                            </span>
+                            <a asp-controller="Subscriptions" asp-action="Edit" asp-route-id="@trial.SubscriptionId">View</a>
                         </div>
                     }
                 </div>
             }
+        </article>
+    </section>
+
+    <section class="overview-card active-table-panel">
+        <div class="active-table-header">
+            <h2>Active Subscriptions</h2>
+            <div class="active-table-actions">
+                <input class="dashboard-search" type="search" placeholder="Search..." disabled />
+                <a asp-controller="Subscriptions" asp-action="Index" class="btn btn-sm btn-primary dashboard-view-all-btn">View all</a>
+            </div>
         </div>
 
-        <div class="dashboard-panel">
-            <div class="panel-heading">
-                <h2>Status overview</h2>
-                <span class="muted-small">Current state</span>
-            </div>
-            <div class="summary-grid mb-0">
-                <div class="summary-card">
-                    <span>Active</span>
-                    <strong>@Model.ActiveSubscriptionCount</strong>
-                </div>
-                <div class="summary-card">
-                    <span>Paused</span>
-                    <strong>@Model.PausedSubscriptionCount</strong>
-                </div>
-                <div class="summary-card">
-                    <span>Trials</span>
-                    <strong>@Model.TrialAlerts.Count</strong>
+        @if (activeRows.Count == 0)
+        {
+            <div class="dashboard-empty dark-empty">
+                <p>No active subscriptions yet.</p>
+                <div class="empty-actions">
+                    <a asp-controller="Subscriptions" asp-action="Create" class="btn btn-primary">Add subscription</a>
+                    <form asp-controller="Subscriptions" asp-action="SeedDemoData" method="post">
+                        <button type="submit" class="btn btn-outline-secondary">Load demo data</button>
+                    </form>
                 </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table dashboard-table align-middle">
+                    <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Cycle</th>
+                        <th>Amount</th>
+                        <th>Next bill</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var subscription in activeRows)
+                    {
+                        var initial = string.IsNullOrWhiteSpace(subscription.Name) ? "S" : subscription.Name.Trim()[0].ToString().ToUpperInvariant();
+                        <tr>
+                            <td>
+                                <div class="service-cell">
+                                    <span class="service-avatar">@initial</span>
+                                    <span>
+                                        <strong>@subscription.Name</strong>
+                                        <em>@subscription.BillingCycle billing</em>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>@subscription.Category</td>
+                            <td><span class="status-pill active">Active</span></td>
+                            <td>@subscription.BillingCycle</td>
+                            <td><strong>@subscription.Price.ToString("C")</strong></td>
+                            <td>@subscription.NextBillingDate.ToString("MMM d, yyyy")</td>
+                            <td class="text-end">
+                                <a asp-controller="Subscriptions" asp-action="Edit" asp-route-id="@subscription.Id" class="table-link">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
     </section>
 }

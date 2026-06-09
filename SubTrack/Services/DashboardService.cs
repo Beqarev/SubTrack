@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SubTrack.Data;
 using SubTrack.Models;
 using SubTrack.ViewModels.Dashboard;
+using SubTrack.ViewModels.Subscriptions;
 
 namespace SubTrack.Services;
 
@@ -70,6 +71,28 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                     TrialEndDate = subscription.TrialEndDate!.Value,
                     DaysRemaining = subscription.TrialDaysRemaining!.Value
                 })
+                .ToList(),
+            ActiveSubscriptions = activeSubscriptions
+                .OrderBy(subscription => subscription.NextBillingDate)
+                .ThenBy(subscription => subscription.Name)
+                .Select(subscription => new SubscriptionListItemViewModel
+                {
+                    Id = subscription.Id,
+                    Name = subscription.Name,
+                    Category = subscription.Category,
+                    BillingCycle = subscription.BillingCycle,
+                    Price = subscription.Price,
+                    CurrencyCode = subscription.CurrencyCode,
+                    Status = subscription.Status,
+                    NextBillingDate = subscription.NextBillingDate,
+                    IsFreeTrial = subscription.IsFreeTrial,
+                    TrialDaysRemaining = subscription.TrialDaysRemaining,
+                    MonthlyCost = subscription.MonthlyCost,
+                    AnnualCost = subscription.AnnualCost,
+                    IsTrialExpiringSoon = subscription.IsTrialExpiringSoon,
+                    IsBillDueSoon = subscription.IsBillDueSoon
+                })
+                .Take(8)
                 .ToList()
         };
     }

@@ -1,3 +1,5 @@
+using SubTrack.ViewModels.Subscriptions;
+
 namespace SubTrack.ViewModels.Dashboard;
 
 public class DashboardViewModel
@@ -17,4 +19,6 @@ public class DashboardViewModel
     public IReadOnlyList<UpcomingBillViewModel> UpcomingBills { get; set; } = [];
 
     public IReadOnlyList<TrialAlertViewModel> TrialAlerts { get; set; } = [];
+
+    public IReadOnlyList<SubscriptionListItemViewModel> ActiveSubscriptions { get; set; } = [];
 }

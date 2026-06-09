@@ -4,152 +4,187 @@
     ViewData["Title"] = "Subscriptions";
 }
 
-<section class="page-heading">
-    <div>
-        <p class="section-eyebrow">Subscription Management</p>
-        <h1>Subscriptions</h1>
-    </div>
-    <a asp-action="Create" class="btn btn-primary">Add subscription</a>
-</section>
-
-@if (TempData["SuccessMessage"] is string successMessage)
-{
-    <div class="alert alert-success" role="alert">@successMessage</div>
-}
-
-@if (TempData["ErrorMessage"] is string errorMessage)
-{
-    <div class="alert alert-warning" role="alert">@errorMessage</div>
-}
-
-<section class="summary-grid" aria-label="Subscription summary">
-    <div class="summary-card">
-        <span>Total</span>
-        <strong>@Model.TotalCount</strong>
-    </div>
-    <div class="summary-card">
-        <span>Active monthly spend</span>
-        <strong>@Model.ActiveMonthlySpend.ToString("C")</strong>
-    </div>
-    <div class="summary-card">
-        <span>Filtered results</span>
-        <strong>@Model.Subscriptions.Count</strong>
-    </div>
-</section>
-
-<form asp-action="Index" method="get" class="filter-bar">
-    <div>
-        <label for="searchTerm" class="form-label">Search</label>
-        <input id="searchTerm" name="searchTerm" value="@Model.SearchTerm" class="form-control" placeholder="Netflix, Adobe, storage"/>
-    </div>
-    <div>
-        <label for="category" class="form-label">Category</label>
-        <select id="category" name="category" asp-for="Category" asp-items="Html.GetEnumSelectList<SubscriptionCategory>()" class="form-select">
-            <option value="">All categories</option>
-        </select>
-    </div>
-    <div>
-        <label for="status" class="form-label">Status</label>
-        <select id="status" name="status" asp-for="Status" asp-items="Html.GetEnumSelectList<SubscriptionStatus>()" class="form-select">
-            <option value="">All statuses</option>
-        </select>
-    </div>
-    <div class="filter-actions">
-        <button type="submit" class="btn btn-dark">Apply</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Reset</a>
-    </div>
-</form>
-
-@if (Model.Subscriptions.Count == 0)
-{
-    <section class="empty-state">
-        <h2>No subscriptions found</h2>
-        <p>Add your first subscription or adjust the filters.</p>
-        <div class="heading-actions">
-            <div class="empty-actions">
-            <a asp-action="Create" class="btn btn-primary">Add subscription</a>
-            @if (Model.TotalCount == 0)
-            {
-                <form asp-action="SeedDemoData" method="post">
-                    <button type="submit" class="btn btn-outline-secondary">Load demo data</button>
-                </form>
-            }
+<section class="subscriptions-page">
+    <div class="subscriptions-heading">
+        <div>
+            <h1>Subscriptions</h1>
+            <p>All recurring services in one place. Pause, resume, or cancel anytime.</p>
         </div>
-            @if (Model.TotalCount == 0)
-            {
-                <form asp-action="SeedDemoData" method="post">
-                    <button type="submit" class="btn btn-outline-secondary">Load demo data</button>
-                </form>
-            }
+        <div class="subscriptions-heading-actions">
+            <button type="button" class="btn btn-ghost" disabled>Export</button>
+            <a asp-action="Create" class="btn btn-primary">+ New Subscription</a>
         </div>
-    </section>
-}
-else
-{
-    <div class="table-responsive data-panel">
-        <table class="table align-middle subscription-table">
-            <thead>
-            <tr>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Billing</th>
-                <th>Next bill</th>
-                <th>Status</th>
-                <th>Trial</th>
-                <th class="text-end">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var subscription in Model.Subscriptions)
-            {
-                <tr>
-                    <td>
-                        <div class="fw-semibold">@subscription.Name</div>
-                        <div class="text-muted small">@subscription.MonthlyCost.ToString("C") / month</div>
-                    </td>
-                    <td>@subscription.Category</td>
-                    <td>
-                        <div>@subscription.Price.ToString("0.00") @subscription.CurrencyCode</div>
-                        <div class="text-muted small">@subscription.BillingCycle</div>
-                    </td>
-                    <td>
-                        <div>@subscription.NextBillingDate.ToString("MMM d, yyyy")</div>
-                        <div class="small @(subscription.IsBillDueSoon ? "text-danger fw-semibold" : "text-muted")">
-                            @subscription.DaysUntilBilling days
-                        </div>
-                    </td>
-                    <td>
-                        <span class="badge rounded-pill @subscription.StatusBadgeCssClass">@subscription.Status</span>
-                    </td>
-                    <td>
-                        @if (subscription.IsFreeTrial && subscription.TrialDaysRemaining is not null)
-                        {
-                            <span class="@(subscription.IsTrialExpiringSoon ? "text-danger fw-semibold" : "text-muted")">
-                                @subscription.TrialDaysRemaining days left
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="text-muted">None</span>
-                        }
-                    </td>
-                    <td class="text-end">
-                        <div class="action-row">
-                            @if (subscription.Status != SubscriptionStatus.Canceled)
+    </div>
+
+    @if (TempData["SuccessMessage"] is string successMessage)
+    {
+        <div class="st-alert st-alert-success" role="alert">@successMessage</div>
+    }
+
+    @if (TempData["ErrorMessage"] is string errorMessage)
+    {
+        <div class="st-alert st-alert-warning" role="alert">@errorMessage</div>
+    }
+
+    <section class="subscriptions-panel" aria-label="Subscription list">
+        <div class="subscriptions-toolbar">
+            <nav class="subscription-tabs" aria-label="Subscription filters">
+                <a asp-action="Index"
+                   asp-route-searchTerm="@Model.SearchTerm"
+                   asp-route-category="@Model.Category"
+                   class="subscription-tab @(!Model.TrialOnly && Model.Status is null ? "active" : null)">
+                    All <span>@Model.AllCount</span>
+                </a>
+                <a asp-action="Index"
+                   asp-route-searchTerm="@Model.SearchTerm"
+                   asp-route-category="@Model.Category"
+                   asp-route-status="@SubscriptionStatus.Active"
+                   class="subscription-tab @(Model.Status == SubscriptionStatus.Active && !Model.TrialOnly ? "active" : null)">
+                    Active <span>@Model.ActiveCount</span>
+                </a>
+                <a asp-action="Index"
+                   asp-route-searchTerm="@Model.SearchTerm"
+                   asp-route-category="@Model.Category"
+                   asp-route-trialOnly="true"
+                   class="subscription-tab @(Model.TrialOnly ? "active" : null)">
+                    Trial <span>@Model.TrialCount</span>
+                </a>
+                <a asp-action="Index"
+                   asp-route-searchTerm="@Model.SearchTerm"
+                   asp-route-category="@Model.Category"
+                   asp-route-status="@SubscriptionStatus.Paused"
+                   class="subscription-tab @(Model.Status == SubscriptionStatus.Paused && !Model.TrialOnly ? "active" : null)">
+                    Paused <span>@Model.PausedCount</span>
+                </a>
+            </nav>
+
+            <form asp-action="Index" method="get" class="subscriptions-filter-form">
+                @if (Model.Status is not null && !Model.TrialOnly)
+                {
+                    <input type="hidden" name="status" value="@Model.Status" />
+                }
+                @if (Model.TrialOnly)
+                {
+                    <input type="hidden" name="trialOnly" value="true" />
+                }
+                <select name="category" asp-for="Category" asp-items="Html.GetEnumSelectList<SubscriptionCategory>()" class="filter-select" aria-label="Filter by category">
+                    <option value="">All categories</option>
+                </select>
+                <input name="searchTerm" value="@Model.SearchTerm" class="filter-search" placeholder="Search subscriptions..." aria-label="Search subscriptions" />
+                <button type="submit" class="btn btn-ghost">Filter</button>
+                @if (Model.HasFilters)
+                {
+                    <a asp-action="Index" class="btn btn-ghost">Reset</a>
+                }
+            </form>
+        </div>
+
+        @if (Model.Subscriptions.Count == 0)
+        {
+            <div class="subscriptions-empty">
+                <h2>No subscriptions found</h2>
+                <p>Add your first subscription or adjust the current filters.</p>
+                <div class="subscriptions-empty-actions">
+                    <a asp-action="Create" class="btn btn-primary">+ New Subscription</a>
+                    @if (Model.TotalCount == 0)
+                    {
+                        <form asp-action="SeedDemoData" method="post">
+                            <button type="submit" class="btn btn-ghost">Load demo data</button>
+                        </form>
+                    }
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="subscriptions-table-wrap">
+                <table class="subscriptions-table">
+                    <thead>
+                    <tr>
+                        <th>Service</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Cycle</th>
+                        <th>Amount</th>
+                        <th>Next Bill</th>
+                        <th class="table-actions-heading">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var subscription in Model.Subscriptions)
+                    {
+                        var initial = string.IsNullOrWhiteSpace(subscription.Name) ? "S" : subscription.Name.Trim()[0].ToString().ToUpperInvariant();
+                        var statusClass = subscription.IsFreeTrial
+                            ? "status-trial"
+                            : subscription.Status switch
                             {
-                                <form asp-action="ToggleStatus" asp-route-id="@subscription.Id" method="post">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary">
-                                        @(subscription.Status == SubscriptionStatus.Active ? "Pause" : "Activate")
-                                    </button>
-                                </form>
-                            }
-                            <a asp-action="Edit" asp-route-id="@subscription.Id" class="btn btn-sm btn-outline-primary">Edit</a>
-                            <a asp-action="Delete" asp-route-id="@subscription.Id" class="btn btn-sm btn-outline-danger">Delete</a>
-                        </div>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    </div>
+                                SubscriptionStatus.Active => "status-active",
+                                SubscriptionStatus.Paused => "status-paused",
+                                SubscriptionStatus.Canceled => "status-canceled",
+                                _ => "status-canceled"
+                            };
+                        var statusText = subscription.IsFreeTrial && subscription.TrialDaysRemaining is not null
+                            ? $"Trial · {subscription.TrialDaysRemaining}d"
+                            : DisplayName(subscription.Status);
+
+                        <tr>
+                            <td>
+                                <div class="service-cell">
+                                    <span class="service-avatar">@initial</span>
+                                    <span>
+                                        <strong>@subscription.Name</strong>
+                                        <small>@DisplayName(subscription.BillingCycle) billing</small>
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="table-muted">@DisplayName(subscription.Category)</td>
+                            <td><span class="status-pill @statusClass">@statusText</span></td>
+                            <td class="table-muted">@DisplayName(subscription.BillingCycle)</td>
+                            <td class="table-strong">@subscription.Price.ToString("C")</td>
+                            <td>
+                                <span class="table-date">@subscription.NextBillingDate.ToString("MMM d, yyyy")</span>
+                                @if (subscription.IsBillDueSoon)
+                                {
+                                    <small class="due-soon">@subscription.DaysUntilBilling days</small>
+                                }
+                            </td>
+                            <td>
+                                <div class="row-actions">
+                                    @if (subscription.Status != SubscriptionStatus.Canceled)
+                                    {
+                                        <form asp-action="ToggleStatus" asp-route-id="@subscription.Id" method="post" class="toggle-form">
+                                            <button type="submit"
+                                                    class="subscription-switch @(subscription.Status == SubscriptionStatus.Active ? "is-on" : null)"
+                                                    aria-label="Toggle @subscription.Name active status">
+                                                <span></span>
+                                            </button>
+                                        </form>
+                                    }
+                                    <a asp-action="Edit" asp-route-id="@subscription.Id" class="table-link">Edit</a>
+                                    <a asp-action="Delete" asp-route-id="@subscription.Id" class="table-link table-link-danger">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="subscriptions-footer">
+                <span>Showing @Model.FilteredCount of @Model.TotalCount</span>
+                <span>Monthly active total @Model.ActiveMonthlySpend.ToString("C")</span>
+            </div>
+        }
+    </section>
+</section>
+
+@functions {
+    private static string DisplayName(Enum value)
+    {
+        var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+        var display = member?.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+            .OfType<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+            .FirstOrDefault();
+
+        return display?.Name ?? value.ToString();
+    }
 }

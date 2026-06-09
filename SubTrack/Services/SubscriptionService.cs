@@ -11,41 +11,52 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
         string userId,
         string? searchTerm = null,
         SubscriptionCategory? category = null,
-        SubscriptionStatus? status = null)
+        SubscriptionStatus? status = null,
+        bool trialOnly = false)
     {
-        var query = context.Subscriptions
+        var allSubscriptions = await context.Subscriptions
             .AsNoTracking()
-            .Where(subscription => subscription.ApplicationUserId == userId);
+            .Where(subscription => subscription.ApplicationUserId == userId)
+            .OrderBy(subscription => subscription.NextBillingDate)
+            .ThenBy(subscription => subscription.Name)
+            .ToListAsync();
+
+        IEnumerable<Subscription> filteredSubscriptions = allSubscriptions;
 
         if (!string.IsNullOrWhiteSpace(searchTerm))
         {
-            var normalizedSearchTerm = searchTerm.Trim().ToLower();
-            query = query.Where(subscription =>
-                subscription.Name.ToLower().Contains(normalizedSearchTerm) ||
-                (subscription.Description != null && subscription.Description.ToLower().Contains(normalizedSearchTerm)));
+            var normalizedSearchTerm = searchTerm.Trim();
+            filteredSubscriptions = filteredSubscriptions.Where(subscription =>
+                subscription.Name.Contains(normalizedSearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                (subscription.Description?.Contains(normalizedSearchTerm, StringComparison.OrdinalIgnoreCase) ?? false));
         }
 
         if (category is not null)
         {
-            query = query.Where(subscription => subscription.Category == category);
+            filteredSubscriptions = filteredSubscriptions.Where(subscription => subscription.Category == category);
         }
 
         if (status is not null)
         {
-            query = query.Where(subscription => subscription.Status == status);
+            filteredSubscriptions = filteredSubscriptions.Where(subscription => subscription.Status == status);
         }
 
-        var subscriptions = await query
-            .OrderBy(subscription => subscription.NextBillingDate)
-            .ThenBy(subscription => subscription.Name)
-            .ToListAsync();
+        if (trialOnly)
+        {
+            filteredSubscriptions = filteredSubscriptions.Where(subscription => subscription.IsFreeTrial);
+        }
 
         return new SubscriptionIndexViewModel
         {
             SearchTerm = searchTerm,
             Category = category,
             Status = status,
-            Subscriptions = subscriptions.Select(MapToListItem).ToList()
+            TrialOnly = trialOnly,
+            AllCount = allSubscriptions.Count,
+            ActiveCount = allSubscriptions.Count(subscription => subscription.Status == SubscriptionStatus.Active),
+            PausedCount = allSubscriptions.Count(subscription => subscription.Status == SubscriptionStatus.Paused),
+            TrialCount = allSubscriptions.Count(subscription => subscription.IsFreeTrial),
+            Subscriptions = filteredSubscriptions.Select(MapToListItem).ToList()
         };
     }
 
@@ -138,25 +149,25 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
         return true;
     }
 
-public async Task<int> SeedDemoDataAsync(string userId)
-{
-    var hasSubscriptions = await context.Subscriptions
-        .AnyAsync(subscription => subscription.ApplicationUserId == userId);
-
-    if (hasSubscriptions)
+    public async Task<int> SeedDemoDataAsync(string userId)
     {
-        return 0;
-    }
+        var hasSubscriptions = await context.Subscriptions
+            .AnyAsync(subscription => subscription.ApplicationUserId == userId);
 
-    var createdCount = 0;
-    foreach (var demoSubscription in DemoSubscriptionCatalog.Create(DateTime.Today))
-    {
-        await CreateAsync(userId, demoSubscription);
-        createdCount++;
-    }
+        if (hasSubscriptions)
+        {
+            return 0;
+        }
 
-    return createdCount;
-}
+        var createdCount = 0;
+        foreach (var demoSubscription in DemoSubscriptionCatalog.Create(DateTime.Today))
+        {
+            await CreateAsync(userId, demoSubscription);
+            createdCount++;
+        }
+
+        return createdCount;
+    }
 
     private static SubscriptionListItemViewModel MapToListItem(Subscription subscription)
     {

@@ -16,13 +16,15 @@ public class SubscriptionsController(
     public async Task<IActionResult> Index(
         string? searchTerm,
         SubscriptionCategory? category,
-        SubscriptionStatus? status)
+        SubscriptionStatus? status,
+        bool trialOnly = false)
     {
         var model = await subscriptionService.GetIndexAsync(
             GetCurrentUserId(),
             searchTerm,
             category,
-            status);
+            status,
+            trialOnly);
 
         return View(model);
     }
@@ -120,17 +122,17 @@ public class SubscriptionsController(
         return RedirectToAction(nameof(Index));
     }
 
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> SeedDemoData()
-{
-    var createdCount = await subscriptionService.SeedDemoDataAsync(GetCurrentUserId());
-    TempData[createdCount == 0 ? "ErrorMessage" : "SuccessMessage"] = createdCount == 0
-        ? "Demo data is only added when your subscription list is empty."
-        : $"Added {createdCount} demo subscriptions.";
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SeedDemoData()
+    {
+        var createdCount = await subscriptionService.SeedDemoDataAsync(GetCurrentUserId());
+        TempData[createdCount == 0 ? "ErrorMessage" : "SuccessMessage"] = createdCount == 0
+            ? "Demo data is only added when your subscription list is empty."
+            : $"Added {createdCount} demo subscriptions.";
 
-    return RedirectToAction(nameof(Index));
-}
+        return RedirectToAction(nameof(Index));
+    }
 
     private string GetCurrentUserId()
     {
