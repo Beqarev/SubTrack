@@ -1,0 +1,122 @@
+@model SettingsViewModel
+
+@{
+    ViewData["Title"] = "Settings";
+}
+
+<section class="settings-page">
+    <div class="settings-heading">
+        <h1>Settings</h1>
+        <p>Personalize SubTrack to fit how you manage subscriptions.</p>
+    </div>
+
+    <div class="settings-layout">
+        <nav class="settings-menu" aria-label="Settings sections">
+            <a href="#profile" class="settings-menu-item active">Profile</a>
+            <a href="#notifications" class="settings-menu-item">Notifications</a>
+            <a href="#security" class="settings-menu-item">Security</a>
+            <a href="#appearance" class="settings-menu-item">Appearance</a>
+        </nav>
+
+        <div class="settings-panels">
+            <section id="profile" class="settings-panel">
+                <div class="settings-panel-heading">
+                    <h2>Profile</h2>
+                    <p>How you appear inside SubTrack.</p>
+                </div>
+                <div class="profile-row">
+                    <span class="settings-avatar">@Initial(Model.FullName, Model.Email)</span>
+                    <div>
+                        <strong>@Model.FullName</strong>
+                        <span>@Model.Email</span>
+                    </div>
+                </div>
+                <div class="settings-form-grid">
+                    <label>
+                        <span>Full name</span>
+                        <input value="@Model.FullName" readonly />
+                    </label>
+                    <label>
+                        <span>Email</span>
+                        <input value="@Model.Email" readonly />
+                    </label>
+                    <label>
+                        <span>Currency</span>
+                        <input value="@Model.CurrencyCode" readonly />
+                    </label>
+                </div>
+            </section>
+
+            <section id="notifications" class="settings-panel">
+                <div class="settings-panel-heading">
+                    <h2>Notifications</h2>
+                    <p>Choose when SubTrack should alert you.</p>
+                </div>
+                <div class="settings-toggle-list">
+                    <div class="settings-toggle-row">
+                        <div>
+                            <strong>Trial conversion alerts</strong>
+                            <span>Get notified before a free trial converts.</span>
+                        </div>
+                        <span class="settings-switch @(Model.TrialConversionAlerts ? "is-on" : null)"><span></span></span>
+                    </div>
+                    <div class="settings-toggle-row">
+                        <div>
+                            <strong>Upcoming renewal alerts</strong>
+                            <span>Surface renewals due in the next 30 days.</span>
+                        </div>
+                        <span class="settings-switch @(Model.UpcomingRenewalAlerts ? "is-on" : null)"><span></span></span>
+                    </div>
+                    <div class="settings-toggle-row">
+                        <div>
+                            <strong>Spend anomaly detection</strong>
+                            <span>Highlight categories that look unusually high.</span>
+                        </div>
+                        <span class="settings-switch @(Model.SpendAnomalyDetection ? "is-on" : null)"><span></span></span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="security" class="settings-panel">
+                <div class="settings-panel-heading">
+                    <h2>Security</h2>
+                    <p>Keep your account locked down.</p>
+                </div>
+                <div class="settings-toggle-row">
+                    <div>
+                        <strong>Two-factor authentication</strong>
+                        <span>@(Model.TwoFactorEnabled ? "Enabled for this account." : "Not enabled yet.")</span>
+                    </div>
+                    <span class="settings-switch @(Model.TwoFactorEnabled ? "is-on" : null)"><span></span></span>
+                </div>
+            </section>
+
+            <section id="appearance" class="settings-panel">
+                <div class="settings-panel-heading">
+                    <h2>Appearance</h2>
+                    <p>Current visual theme.</p>
+                </div>
+                <div class="theme-grid">
+                    <article class="theme-card active">
+                        <span class="theme-preview midnight"></span>
+                        <strong>Midnight</strong>
+                        <em>Active</em>
+                    </article>
+                    <article class="theme-card">
+                        <span class="theme-preview paper"></span>
+                        <strong>Paper</strong>
+                        <em>Planned</em>
+                    </article>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+
+@functions {
+    private static string Initial(string fullName, string email)
+    {
+        var source = string.IsNullOrWhiteSpace(fullName) ? email : fullName;
+        return string.IsNullOrWhiteSpace(source) ? "S" : source.Trim()[0].ToString().ToUpperInvariant();
+    }
+}

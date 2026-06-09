@@ -4,21 +4,24 @@
     ViewData["Title"] = "Add Subscription";
 }
 
-<section class="page-heading">
-    <div>
-        <p class="section-eyebrow">New subscription</p>
-        <h1>Add subscription</h1>
+<section class="subscription-form-page">
+    <div class="subscription-form-heading">
+        <div>
+            <span>New subscription</span>
+            <h1>Add subscription</h1>
+            <p>Capture the billing details SubTrack needs for dashboards, renewals, and trial alerts.</p>
+        </div>
+        <a asp-action="Index" class="form-link-button">Back to list</a>
     </div>
-    <a asp-action="Index" class="btn btn-outline-secondary">Back to list</a>
-</section>
 
-<form asp-action="Create" method="post" class="form-panel">
-    <partial name="_Form" model="Model"/>
-    <div class="form-footer">
-        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
-        <button type="submit" class="btn btn-primary">Create subscription</button>
-    </div>
-</form>
+    <form asp-action="Create" method="post" class="subscription-form-panel">
+        <partial name="_Form" model="Model"/>
+        <div class="subscription-form-footer">
+            <a asp-action="Index" class="form-link-button">Cancel</a>
+            <button type="submit" class="form-primary-button">Create subscription</button>
+        </div>
+    </form>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>

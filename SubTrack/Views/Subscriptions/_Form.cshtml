@@ -1,104 +1,139 @@
 @model SubscriptionFormViewModel
 
-<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<div asp-validation-summary="ModelOnly" class="form-validation-summary"></div>
 
-<div class="form-grid">
-    <div>
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" autocomplete="off"/>
-        <span asp-validation-for="Name" class="text-danger"></span>
+<section class="form-section">
+    <div class="form-section-heading">
+        <h2>Essentials</h2>
+        <p>Service identity and category.</p>
     </div>
-
-    <div>
-        <label asp-for="Category" class="form-label"></label>
-        <select asp-for="Category" asp-items="Html.GetEnumSelectList<SubscriptionCategory>()" class="form-select"></select>
-        <span asp-validation-for="Category" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="Price" class="form-label"></label>
-        <input asp-for="Price" class="form-control" inputmode="decimal"/>
-        <span asp-validation-for="Price" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="CurrencyCode" class="form-label"></label>
-        <input asp-for="CurrencyCode" class="form-control text-uppercase" maxlength="3"/>
-        <span asp-validation-for="CurrencyCode" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="BillingCycle" class="form-label"></label>
-        <select asp-for="BillingCycle" asp-items="Html.GetEnumSelectList<BillingCycle>()" class="form-select"></select>
-        <span asp-validation-for="BillingCycle" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="PaymentMethod" class="form-label"></label>
-        <select asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()" class="form-select"></select>
-        <span asp-validation-for="PaymentMethod" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="Status" class="form-label"></label>
-        <select asp-for="Status" asp-items="Html.GetEnumSelectList<SubscriptionStatus>()" class="form-select"></select>
-        <span asp-validation-for="Status" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="ReminderDaysBeforeRenewal" class="form-label"></label>
-        <input asp-for="ReminderDaysBeforeRenewal" class="form-control" inputmode="numeric"/>
-        <span asp-validation-for="ReminderDaysBeforeRenewal" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="StartDate" class="form-label"></label>
-        <input asp-for="StartDate" class="form-control"/>
-        <span asp-validation-for="StartDate" class="text-danger"></span>
-    </div>
-
-    <div>
-        <label asp-for="NextBillingDate" class="form-label"></label>
-        <input asp-for="NextBillingDate" class="form-control"/>
-        <span asp-validation-for="NextBillingDate" class="text-danger"></span>
-    </div>
-
-    <div class="form-grid-full">
-        <label asp-for="WebsiteUrl" class="form-label"></label>
-        <input asp-for="WebsiteUrl" class="form-control" autocomplete="url"/>
-        <span asp-validation-for="WebsiteUrl" class="text-danger"></span>
-    </div>
-
-    <div class="form-grid-full">
-        <label asp-for="Description" class="form-label"></label>
-        <textarea asp-for="Description" class="form-control" rows="2"></textarea>
-        <span asp-validation-for="Description" class="text-danger"></span>
-    </div>
-</div>
-
-<div class="trial-panel">
-    <div class="form-check form-switch">
-        <input asp-for="IsFreeTrial" class="form-check-input" role="switch"/>
-        <label asp-for="IsFreeTrial" class="form-check-label"></label>
-    </div>
-
-    <div id="trialFields" class="form-grid mt-3">
-        <div>
-            <label asp-for="TrialStartDate" class="form-label"></label>
-            <input asp-for="TrialStartDate" class="form-control"/>
-            <span asp-validation-for="TrialStartDate" class="text-danger"></span>
+    <div class="subscription-form-grid">
+        <div class="form-field form-field-wide">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" autocomplete="off" placeholder="Netflix, Spotify, ChatGPT" />
+            <span asp-validation-for="Name"></span>
         </div>
 
-        <div>
-            <label asp-for="TrialEndDate" class="form-label"></label>
-            <input asp-for="TrialEndDate" class="form-control"/>
-            <span asp-validation-for="TrialEndDate" class="text-danger"></span>
+        <div class="form-field">
+            <label asp-for="Category"></label>
+            <select asp-for="Category" asp-items="Html.GetEnumSelectList<SubscriptionCategory>()"></select>
+            <span asp-validation-for="Category"></span>
+        </div>
+
+        <div class="form-field form-field-wide">
+            <label asp-for="WebsiteUrl"></label>
+            <input asp-for="WebsiteUrl" autocomplete="url" placeholder="https://example.com" />
+            <span asp-validation-for="WebsiteUrl"></span>
+        </div>
+
+        <div class="form-field form-field-wide">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" rows="3" placeholder="Optional context about the plan or account"></textarea>
+            <span asp-validation-for="Description"></span>
         </div>
     </div>
-</div>
+</section>
 
-<div class="mt-4">
-    <label asp-for="Notes" class="form-label"></label>
-    <textarea asp-for="Notes" class="form-control" rows="3"></textarea>
-    <span asp-validation-for="Notes" class="text-danger"></span>
-</div>
+<section class="form-section">
+    <div class="form-section-heading">
+        <h2>Billing</h2>
+        <p>Used for monthly spend, annual projection, and renewal reminders.</p>
+    </div>
+    <div class="subscription-form-grid">
+        <div class="form-field">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" inputmode="decimal" />
+            <span asp-validation-for="Price"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="CurrencyCode"></label>
+            <input asp-for="CurrencyCode" maxlength="3" />
+            <span asp-validation-for="CurrencyCode"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="BillingCycle"></label>
+            <select asp-for="BillingCycle" asp-items="Html.GetEnumSelectList<BillingCycle>()"></select>
+            <span asp-validation-for="BillingCycle"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="PaymentMethod"></label>
+            <select asp-for="PaymentMethod" asp-items="Html.GetEnumSelectList<PaymentMethod>()"></select>
+            <span asp-validation-for="PaymentMethod"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="Status"></label>
+            <select asp-for="Status" asp-items="Html.GetEnumSelectList<SubscriptionStatus>()"></select>
+            <span asp-validation-for="Status"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="ReminderDaysBeforeRenewal"></label>
+            <input asp-for="ReminderDaysBeforeRenewal" inputmode="numeric" />
+            <span asp-validation-for="ReminderDaysBeforeRenewal"></span>
+        </div>
+    </div>
+</section>
+
+<section class="form-section">
+    <div class="form-section-heading">
+        <h2>Dates</h2>
+        <p>Controls upcoming bills and alert timing.</p>
+    </div>
+    <div class="subscription-form-grid">
+        <div class="form-field">
+            <label asp-for="StartDate"></label>
+            <input asp-for="StartDate" />
+            <span asp-validation-for="StartDate"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="NextBillingDate"></label>
+            <input asp-for="NextBillingDate" />
+            <span asp-validation-for="NextBillingDate"></span>
+        </div>
+    </div>
+</section>
+
+<section class="form-section trial-form-section">
+    <div class="trial-toggle-row">
+        <div>
+            <h2>Free trial</h2>
+            <p>Enable countdown alerts before the plan converts.</p>
+        </div>
+        <label class="form-switch-control">
+            <input asp-for="IsFreeTrial" role="switch" />
+            <span></span>
+            <em>Free Trial</em>
+        </label>
+    </div>
+
+    <div id="trialFields" class="subscription-form-grid trial-date-grid">
+        <div class="form-field">
+            <label asp-for="TrialStartDate"></label>
+            <input asp-for="TrialStartDate" />
+            <span asp-validation-for="TrialStartDate"></span>
+        </div>
+
+        <div class="form-field">
+            <label asp-for="TrialEndDate"></label>
+            <input asp-for="TrialEndDate" />
+            <span asp-validation-for="TrialEndDate"></span>
+        </div>
+    </div>
+</section>
+
+<section class="form-section">
+    <div class="form-section-heading">
+        <h2>Notes</h2>
+        <p>Private details for cancellation steps, plan limits, or renewal context.</p>
+    </div>
+    <div class="form-field form-field-wide">
+        <label asp-for="Notes"></label>
+        <textarea asp-for="Notes" rows="4" placeholder="Optional notes"></textarea>
+        <span asp-validation-for="Notes"></span>
+    </div>
+</section>

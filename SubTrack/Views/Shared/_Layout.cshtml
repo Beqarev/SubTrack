@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="~/css/subscriptions.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/analytics.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/alerts.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/settings.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/stage6-polish.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/SubTrack.styles.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/app-shell.css" asp-append-version="true"/>
@@ -47,11 +49,11 @@
                 <a class="sidebar-link @(controller == "Analytics" ? "active" : string.Empty)" asp-controller="Analytics" asp-action="Index">
                     <span class="nav-left"><span class="nav-icon">A</span> Analytics</span>
                 </a>
-                <a class="sidebar-link" href="#" aria-disabled="true">
+                <a class="sidebar-link @(controller == "Alerts" ? "active" : string.Empty)" asp-controller="Alerts" asp-action="Index">
                     <span class="nav-left"><span class="nav-icon">!</span> Alerts</span>
                     <span class="nav-badge">2</span>
                 </a>
-                <a class="sidebar-link" href="#" aria-disabled="true">
+                <a class="sidebar-link @(controller == "Settings" ? "active" : string.Empty)" asp-controller="Settings" asp-action="Index">
                     <span class="nav-left"><span class="nav-icon">*</span> Settings</span>
                 </a>
             }

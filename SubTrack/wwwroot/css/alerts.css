@@ -1,0 +1,255 @@
+.alerts-page {
+  display: grid;
+  gap: 1.55rem;
+}
+
+.alerts-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.alerts-heading h1 {
+  margin: 0;
+  color: var(--st-text);
+  font-size: 1.65rem;
+  font-weight: 850;
+}
+
+.alerts-heading p {
+  margin: .35rem 0 0;
+  color: var(--st-muted);
+  font-size: .96rem;
+  font-weight: 600;
+}
+
+.alerts-settings {
+  display: inline-flex;
+  min-height: 2.35rem;
+  align-items: center;
+  border: 1px solid var(--st-border-strong);
+  border-radius: .7rem;
+  padding: .45rem .85rem;
+  background: #101115;
+  color: var(--st-text);
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+.alerts-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.alerts-kpi-card,
+.alerts-panel {
+  border: 1px solid var(--st-border);
+  border-radius: var(--st-radius);
+  background: rgba(23, 23, 27, .96);
+  box-shadow: var(--st-shadow);
+}
+
+.alerts-kpi-card {
+  position: relative;
+  overflow: hidden;
+  padding: 1.25rem 1.35rem;
+}
+
+.alerts-kpi-card::after {
+  position: absolute;
+  top: 1.15rem;
+  right: 1.15rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: .7rem;
+  opacity: .9;
+  content: "";
+}
+
+.alerts-kpi-card.warning::after {
+  background: rgba(217, 154, 5, .22);
+}
+
+.alerts-kpi-card.primary::after {
+  background: rgba(109, 112, 255, .24);
+}
+
+.alerts-kpi-card.muted::after {
+  background: rgba(154, 155, 165, .16);
+}
+
+.alerts-kpi-card.success::after {
+  background: rgba(0, 194, 135, .16);
+}
+
+.alerts-kpi-card span {
+  display: block;
+  color: var(--st-subtle);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.alerts-kpi-card strong {
+  display: block;
+  margin-top: .55rem;
+  color: var(--st-text);
+  font-size: 1.8rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.alerts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.alerts-panel {
+  min-height: 15.5rem;
+  padding: 1.35rem;
+}
+
+.panel-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panel-heading h2 {
+  margin: 0;
+  color: var(--st-text);
+  font-size: .98rem;
+  font-weight: 850;
+}
+
+.panel-heading p {
+  margin: .25rem 0 0;
+  color: var(--st-muted);
+  font-size: .8rem;
+  font-weight: 650;
+}
+
+.alert-list {
+  display: grid;
+  gap: .75rem;
+}
+
+.alert-card,
+.alert-empty-card {
+  border: 1px solid var(--st-border);
+  border-radius: .75rem;
+  padding: 1rem;
+  background: #121318;
+}
+
+.alert-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.warning-card {
+  border-color: rgba(217, 154, 5, .38);
+  background: rgba(217, 154, 5, .08);
+}
+
+.renewal-card {
+  border-color: rgba(109, 112, 255, .35);
+  background: rgba(109, 112, 255, .08);
+}
+
+.neutral-card {
+  background: #101115;
+}
+
+.success-card,
+.success-empty {
+  border-color: rgba(0, 194, 135, .28);
+  background: rgba(0, 194, 135, .08);
+}
+
+.alert-card h3 {
+  margin: 0;
+  color: var(--st-text);
+  font-size: .92rem;
+  font-weight: 850;
+}
+
+.alert-card p {
+  margin: .3rem 0 0;
+  color: var(--st-muted);
+  font-size: .8rem;
+  font-weight: 650;
+}
+
+.alert-card-side {
+  display: grid;
+  justify-items: end;
+  gap: 1.45rem;
+  min-width: 7.5rem;
+  text-align: right;
+}
+
+.alert-card-side span {
+  color: var(--st-subtle);
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.alert-card-side a {
+  color: var(--st-warning);
+  font-size: .7rem;
+  font-weight: 950;
+  letter-spacing: .04em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.renewal-card .alert-card-side a,
+.neutral-card .alert-card-side a {
+  color: #a4a6ff;
+}
+
+.alert-card-side a:hover {
+  color: #fff;
+}
+
+.alert-empty-card {
+  color: var(--st-text);
+  font-size: .9rem;
+  font-weight: 750;
+}
+
+@media (max-width: 1050px) {
+  .alerts-heading,
+  .alert-card {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .alerts-kpis,
+  .alerts-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .alert-card-side {
+    justify-items: start;
+    min-width: 0;
+    text-align: left;
+  }
+}
+
+@media (min-width: 1051px) and (max-width: 1280px) {
+  .alerts-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

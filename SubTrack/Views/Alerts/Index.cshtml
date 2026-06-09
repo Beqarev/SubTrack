@@ -1,0 +1,175 @@
+@model AlertsViewModel
+
+@{
+    ViewData["Title"] = "Smart Alerts";
+}
+
+<section class="alerts-page">
+    <div class="alerts-heading">
+        <div>
+            <h1>Smart Alerts</h1>
+            <p>We watch your trials and renewals so you never get a surprise charge.</p>
+        </div>
+        <span class="alerts-settings">Notification settings</span>
+    </div>
+
+    <section class="alerts-kpis" aria-label="Alert summary">
+        <article class="alerts-kpi-card warning">
+            <span>Trials Ending</span>
+            <strong>@Model.TrialsEndingCount</strong>
+        </article>
+        <article class="alerts-kpi-card primary">
+            <span>Upcoming Renewals</span>
+            <strong>@Model.UpcomingRenewalsCount</strong>
+        </article>
+        <article class="alerts-kpi-card muted">
+            <span>Spend Anomalies</span>
+            <strong>@Model.SpendAnomalyCount</strong>
+        </article>
+        <article class="alerts-kpi-card success">
+            <span>Resolved This Month</span>
+            <strong>@Model.ResolvedThisMonthCount</strong>
+        </article>
+    </section>
+
+    <section class="alerts-grid">
+        <article class="alerts-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Trial countdowns</h2>
+                    <p>Auto-detected from your subscriptions</p>
+                </div>
+            </div>
+
+            @if (Model.TrialCountdowns.Count == 0)
+            {
+                <div class="alert-empty-card">No active trial alerts right now.</div>
+            }
+            else
+            {
+                <div class="alert-list">
+                    @foreach (var trial in Model.TrialCountdowns)
+                    {
+                        <div class="alert-card warning-card">
+                            <div>
+                                <h3>@trial.SubscriptionName trial ends in @trial.DaysRemaining @(trial.DaysRemaining == 1 ? "day" : "days")</h3>
+                                <p>Converts to @trial.ConversionPrice.ToString("C") / month on the next billing date.</p>
+                            </div>
+                            <div class="alert-card-side">
+                                <span>@trial.TrialEndDate.ToString("MMM dd, yyyy")</span>
+                                <a asp-controller="Subscriptions" asp-action="Edit" asp-route-id="@trial.SubscriptionId">Edit trial</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="alerts-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Upcoming renewals</h2>
+                    <p>Next 30 days</p>
+                </div>
+            </div>
+
+            @if (Model.UpcomingRenewals.Count == 0)
+            {
+                <div class="alert-empty-card">No upcoming renewals in the next 30 days.</div>
+            }
+            else
+            {
+                <div class="alert-list">
+                    @foreach (var renewal in Model.UpcomingRenewals)
+                    {
+                        <div class="alert-card renewal-card">
+                            <div>
+                                <h3>@renewal.SubscriptionName renews soon</h3>
+                                <p>@renewal.Amount.ToString("C") will be charged on @renewal.NextBillingDate.ToString("MMM d, yyyy").</p>
+                            </div>
+                            <div class="alert-card-side">
+                                <span>@DisplayName(renewal.BillingCycle)</span>
+                                <a asp-controller="Subscriptions" asp-action="Edit" asp-route-id="@renewal.SubscriptionId">View</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="alerts-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Spend anomalies</h2>
+                    <p>Unusual changes in your patterns</p>
+                </div>
+            </div>
+
+            @if (Model.SpendAnomalies.Count == 0)
+            {
+                <div class="alert-empty-card">No unusual spend patterns detected.</div>
+            }
+            else
+            {
+                <div class="alert-list">
+                    @foreach (var anomaly in Model.SpendAnomalies)
+                    {
+                        <div class="alert-card neutral-card">
+                            <div>
+                                <h3>@anomaly.Title</h3>
+                                <p>@anomaly.Detail</p>
+                            </div>
+                            <div class="alert-card-side">
+                                <span>Last 30 days</span>
+                                <a asp-controller="Analytics" asp-action="Index">Review</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+
+        <article class="alerts-panel">
+            <div class="panel-heading">
+                <div>
+                    <h2>Recently resolved</h2>
+                    <p>Actions you took</p>
+                </div>
+            </div>
+
+            @if (Model.RecentlyResolved.Count == 0)
+            {
+                <div class="alert-empty-card success-empty">No resolved alerts this month.</div>
+            }
+            else
+            {
+                <div class="alert-list">
+                    @foreach (var resolved in Model.RecentlyResolved)
+                    {
+                        <div class="alert-card success-card">
+                            <div>
+                                <h3>@resolved.Title</h3>
+                                <p>@resolved.Detail</p>
+                            </div>
+                            <div class="alert-card-side">
+                                <span>@resolved.TimeAgoLabel</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </article>
+    </section>
+</section>
+
+@functions {
+    private static string DisplayName(Enum value)
+    {
+        var member = value.GetType().GetMember(value.ToString()).FirstOrDefault();
+        var display = member?.GetCustomAttributes(typeof(System.ComponentModel.DataAnnotations.DisplayAttribute), false)
+            .OfType<System.ComponentModel.DataAnnotations.DisplayAttribute>()
+            .FirstOrDefault();
+
+        return display?.Name ?? value.ToString();
+    }
+}
