@@ -11,18 +11,17 @@
     </div>
 
     <div class="settings-layout">
-        <nav class="settings-menu" aria-label="Settings sections">
-            <a href="#profile" class="settings-menu-item active">Profile</a>
-            <a href="#notifications" class="settings-menu-item">Notifications</a>
-            <a href="#security" class="settings-menu-item">Security</a>
-            <a href="#appearance" class="settings-menu-item">Appearance</a>
-        </nav>
-
         <div class="settings-panels">
             <section id="profile" class="settings-panel">
-                <div class="settings-panel-heading">
-                    <h2>Profile</h2>
-                    <p>How you appear inside SubTrack.</p>
+                <div class="settings-panel-heading settings-panel-heading-row">
+                    <div>
+                        <h2>Profile</h2>
+                        <p>How you appear inside SubTrack.</p>
+                    </div>
+                    @if (TempData["SettingsStatus"] is string settingsStatus)
+                    {
+                        <span class="settings-status">@settingsStatus</span>
+                    }
                 </div>
                 <div class="profile-row">
                     <span class="settings-avatar">@Initial(Model.FullName, Model.Email)</span>
@@ -31,20 +30,28 @@
                         <span>@Model.Email</span>
                     </div>
                 </div>
-                <div class="settings-form-grid">
-                    <label>
-                        <span>Full name</span>
-                        <input value="@Model.FullName" readonly />
-                    </label>
-                    <label>
-                        <span>Email</span>
-                        <input value="@Model.Email" readonly />
-                    </label>
-                    <label>
-                        <span>Currency</span>
-                        <input value="@Model.CurrencyCode" readonly />
-                    </label>
-                </div>
+                <form asp-action="Index" method="post" class="settings-profile-form" novalidate>
+                    <div asp-validation-summary="ModelOnly" class="settings-validation-summary"></div>
+                    <div class="settings-form-grid">
+                        <label asp-for="FullName">
+                            <span>Full name</span>
+                            <input asp-for="FullName" autocomplete="name" />
+                            <small asp-validation-for="FullName"></small>
+                        </label>
+                        <label asp-for="Email">
+                            <span>Email</span>
+                            <input asp-for="Email" autocomplete="email" />
+                            <small asp-validation-for="Email"></small>
+                        </label>
+                        <label>
+                            <span>Currency</span>
+                            <input value="@Model.CurrencyCode" readonly aria-readonly="true" />
+                        </label>
+                    </div>
+                    <div class="settings-form-actions">
+                        <button type="submit">Save profile</button>
+                    </div>
+                </form>
             </section>
 
             <section id="notifications" class="settings-panel">
@@ -96,22 +103,26 @@
                     <h2>Appearance</h2>
                     <p>Current visual theme.</p>
                 </div>
-                <div class="theme-grid">
-                    <article class="theme-card active">
+                <div class="theme-grid" role="group" aria-label="Theme options">
+                    <button type="button" class="theme-card active" data-theme-option="midnight" aria-pressed="true">
                         <span class="theme-preview midnight"></span>
                         <strong>Midnight</strong>
-                        <em>Active</em>
-                    </article>
-                    <article class="theme-card">
+                        <em data-theme-status>Active</em>
+                    </button>
+                    <button type="button" class="theme-card" data-theme-option="paper" aria-pressed="false">
                         <span class="theme-preview paper"></span>
                         <strong>Paper</strong>
-                        <em>Planned</em>
-                    </article>
+                        <em data-theme-status>Select</em>
+                    </button>
                 </div>
             </section>
         </div>
     </div>
 </section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+}
 
 @functions {
     private static string Initial(string fullName, string email)

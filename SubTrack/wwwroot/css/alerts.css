@@ -31,7 +31,7 @@
   border: 1px solid var(--st-border-strong);
   border-radius: .7rem;
   padding: .45rem .85rem;
-  background: #101115;
+  background: var(--st-card-bg);
   color: var(--st-text);
   font-size: .82rem;
   font-weight: 800;
@@ -47,7 +47,7 @@
 .alerts-panel {
   border: 1px solid var(--st-border);
   border-radius: var(--st-radius);
-  background: rgba(23, 23, 27, .96);
+  background: var(--st-panel-bg);
   box-shadow: var(--st-shadow);
 }
 
@@ -145,7 +145,7 @@
   border: 1px solid var(--st-border);
   border-radius: .75rem;
   padding: 1rem;
-  background: #121318;
+  background: var(--st-row-bg);
 }
 
 .alert-card {
@@ -166,7 +166,7 @@
 }
 
 .neutral-card {
-  background: #101115;
+  background: var(--st-card-bg);
 }
 
 .success-card,
@@ -216,11 +216,11 @@
 
 .renewal-card .alert-card-side a,
 .neutral-card .alert-card-side a {
-  color: #a4a6ff;
+  color: var(--st-link-accent);
 }
 
 .alert-card-side a:hover {
-  color: #fff;
+  color: var(--st-text);
 }
 
 .alert-empty-card {

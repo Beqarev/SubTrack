@@ -79,7 +79,7 @@
 }
 
 .kpi-alert-card {
-  background: linear-gradient(135deg, var(--st-surface), #1c1d28);
+  background: linear-gradient(135deg, var(--st-surface), var(--st-surface-2));
 }
 
 .overview-grid {
@@ -152,7 +152,7 @@
   height: .55rem;
   overflow: hidden;
   border-radius: 999px;
-  background: #23242a;
+  background: var(--st-chart-track);
 }
 
 .category-fill-v2 {
@@ -234,7 +234,7 @@
   border: 1px solid var(--st-border);
   border-radius: .65rem;
   padding: .45rem .8rem;
-  background: #08090c;
+  background: var(--st-input-bg);
   color: var(--st-muted);
 }
 
@@ -245,7 +245,7 @@
 
 .dashboard-table thead th {
   border-bottom: 1px solid var(--st-border);
-  background: #121318;
+  background: var(--st-row-bg);
   color: var(--st-subtle);
   font-size: .68rem;
   font-weight: 850;
@@ -277,7 +277,7 @@
   align-items: center;
   justify-content: center;
   border-radius: .75rem;
-  background: #26283a;
+  background: var(--st-avatar-bg);
   color: var(--st-text);
   font-size: .82rem;
   font-weight: 850;
@@ -303,7 +303,7 @@
   border: 1px dashed var(--st-border-strong);
   border-radius: var(--st-radius-sm);
   padding: 1rem;
-  background: #111216;
+  background: var(--st-card-bg);
   color: var(--st-muted);
 }
 
@@ -358,7 +358,7 @@
 
 .active-table-actions .btn {
   border-color: var(--st-border-strong);
-  background: #111216;
+  background: var(--st-card-bg);
   color: var(--st-text);
   font-size: .78rem;
   font-weight: 800;
@@ -389,7 +389,7 @@
 .dashboard-table tbody td:nth-child(4),
 .dashboard-table tbody td:nth-child(5),
 .dashboard-table tbody td:nth-child(6) {
-  color: #c9cbd4 !important;
+  color: var(--st-table-emphasis) !important;
   font-weight: 650;
 }
 
@@ -407,7 +407,7 @@
   align-items: center;
   border-radius: 999px;
   padding: .25rem .55rem;
-  color: #8b8dff !important;
+  color: var(--st-link-accent) !important;
 }
 
 .table-link:hover {

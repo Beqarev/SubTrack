@@ -67,7 +67,7 @@
 
 .subscriptions-page .btn-ghost {
   border: 1px solid var(--st-border-strong);
-  background: #111216;
+  background: var(--st-card-bg);
   color: var(--st-text);
 }
 
@@ -106,7 +106,7 @@
   overflow: hidden;
   border: 1px solid var(--st-border);
   border-radius: var(--st-radius);
-  background: rgba(23, 23, 27, .96);
+  background: var(--st-panel-bg);
   box-shadow: var(--st-shadow);
 }
 
@@ -125,7 +125,7 @@
   gap: .25rem;
   border-radius: .8rem;
   padding: .25rem;
-  background: #101115;
+  background: var(--st-card-bg);
 }
 
 .subscription-tab {
@@ -167,7 +167,7 @@
   min-height: 2.35rem;
   border: 1px solid var(--st-border-strong);
   border-radius: .7rem;
-  background: #08090b;
+  background: var(--st-input-bg);
   color: var(--st-text);
   font-size: .86rem;
   font-weight: 650;
@@ -218,15 +218,15 @@
   letter-spacing: .12em;
   text-align: left;
   text-transform: uppercase;
-  background: #121318;
+  background: var(--st-row-bg);
 }
 
 .subscriptions-table tbody tr {
-  background: rgba(23, 23, 27, .85);
+  background: var(--st-panel-bg);
 }
 
 .subscriptions-table tbody tr:hover {
-  background: rgba(37, 37, 43, .65);
+  background: var(--st-hover-bg);
 }
 
 .subscriptions-table tbody tr:last-child td {
@@ -248,7 +248,7 @@
   align-items: center;
   justify-content: center;
   border-radius: .75rem;
-  background: #282943;
+  background: var(--st-avatar-bg);
   color: var(--st-text);
   font-size: .82rem;
   font-weight: 900;
@@ -272,7 +272,7 @@
 
 .table-muted,
 .table-date {
-  color: #c4c5ce;
+  color: var(--st-table-emphasis);
   font-weight: 750;
 }
 
@@ -316,12 +316,12 @@
 .status-paused,
 .status-canceled {
   background: rgba(154, 155, 165, .16);
-  color: #c0c1ca;
+  color: var(--st-muted);
 }
 
 .status-paused::before,
 .status-canceled::before {
-  background: #8b8c94;
+  background: var(--st-muted);
 }
 
 .status-trial {
@@ -355,7 +355,7 @@
   border: 0;
   border-radius: 999px;
   padding: .18rem;
-  background: #2b2c31;
+  background: var(--st-switch-bg);
   cursor: pointer;
   transition: background .16s ease, box-shadow .16s ease;
 }
@@ -365,7 +365,7 @@
   width: 1.08rem;
   height: 1.08rem;
   border-radius: 999px;
-  background: #f2f3f7;
+  background: var(--st-switch-knob);
   transition: transform .16s ease;
 }
 
@@ -379,7 +379,7 @@
 }
 
 .table-link {
-  color: #8f91ff;
+  color: var(--st-link-accent);
   font-size: .75rem;
   font-weight: 900;
   letter-spacing: .04em;
@@ -516,7 +516,7 @@
   overflow: hidden;
   border: 1px solid var(--st-border);
   border-radius: var(--st-radius);
-  background: rgba(23, 23, 27, .96);
+  background: var(--st-panel-bg);
   box-shadow: var(--st-shadow);
 }
 
@@ -581,7 +581,7 @@
   border: 1px solid var(--st-border-strong);
   border-radius: .7rem;
   padding: .65rem .8rem;
-  background: #08090b;
+  background: var(--st-input-bg);
   color: var(--st-text);
   font-weight: 750;
   outline: 0;
@@ -638,14 +638,14 @@
   align-items: center;
   border-radius: 999px;
   padding: .18rem;
-  background: #2b2c31;
+  background: var(--st-switch-bg);
 }
 
 .form-switch-control span::before {
   width: 1.08rem;
   height: 1.08rem;
   border-radius: 999px;
-  background: #f2f3f7;
+  background: var(--st-switch-knob);
   content: "";
   transition: transform .16s ease;
 }
@@ -673,7 +673,7 @@
   justify-content: flex-end;
   gap: .6rem;
   padding: 1rem 1.35rem;
-  background: #14151a;
+  background: var(--st-row-bg);
 }
 
 .form-link-button,
@@ -692,7 +692,7 @@
 
 .form-link-button {
   border: 1px solid var(--st-border-strong);
-  background: #111216;
+  background: var(--st-card-bg);
   color: var(--st-text);
 }
 

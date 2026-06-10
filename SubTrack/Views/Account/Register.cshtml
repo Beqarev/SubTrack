@@ -4,44 +4,50 @@
     ViewData["Title"] = "Register";
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-7 col-lg-5">
-        <h1 class="h3 mb-3">Create your SubTrack account</h1>
-        <form asp-action="Register" method="post" novalidate>
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+<section class="auth-page">
+    <div class="auth-card">
+        <div class="auth-heading">
+            <span>Start tracking</span>
+            <h1>Create your SubTrack account</h1>
+            <p>Set up a profile and start organizing recurring services in one place.</p>
+        </div>
 
-            <div class="mb-3">
-                <label asp-for="FullName" class="form-label"></label>
-                <input asp-for="FullName" class="form-control" autocomplete="name"/>
-                <span asp-validation-for="FullName" class="text-danger"></span>
-            </div>
+        <form asp-action="Register" method="post" class="auth-form" novalidate>
+            <div asp-validation-summary="ModelOnly" class="auth-validation-summary"></div>
 
-            <div class="mb-3">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" autocomplete="email"/>
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
+            <label asp-for="FullName" class="auth-field">
+                <span>Full name</span>
+                <input asp-for="FullName" autocomplete="name"/>
+                <small asp-validation-for="FullName"></small>
+            </label>
 
-            <div class="mb-3">
-                <label asp-for="Password" class="form-label"></label>
-                <input asp-for="Password" class="form-control" autocomplete="new-password"/>
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
+            <label asp-for="Email" class="auth-field">
+                <span>Email</span>
+                <input asp-for="Email" autocomplete="email"/>
+                <small asp-validation-for="Email"></small>
+            </label>
 
-            <div class="mb-3">
-                <label asp-for="ConfirmPassword" class="form-label"></label>
-                <input asp-for="ConfirmPassword" class="form-control" autocomplete="new-password"/>
-                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-            </div>
+            <label asp-for="Password" class="auth-field">
+                <span>Password</span>
+                <input asp-for="Password" autocomplete="new-password"/>
+                <small asp-validation-for="Password"></small>
+            </label>
 
-            <button type="submit" class="btn btn-primary w-100">Create account</button>
+            <label asp-for="ConfirmPassword" class="auth-field">
+                <span>Confirm password</span>
+                <input asp-for="ConfirmPassword" autocomplete="new-password"/>
+                <small asp-validation-for="ConfirmPassword"></small>
+            </label>
+
+            <button type="submit" class="auth-submit">Create account</button>
         </form>
-        <p class="mt-3 mb-0">
+
+        <p class="auth-alt">
             Already have an account?
             <a asp-action="Login">Log in</a>
         </p>
     </div>
-</div>
+</section>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
