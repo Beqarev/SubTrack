@@ -14,6 +14,8 @@ public class SubscriptionIndexViewModel
 
     public bool TrialOnly { get; set; }
 
+    public string CurrencyCode { get; set; } = "USD";
+
     public int AllCount { get; set; }
 
     public int ActiveCount { get; set; }

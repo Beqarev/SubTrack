@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SubTrack.Services;
 
 namespace SubTrack.ViewModels.Settings;
 
@@ -14,7 +15,10 @@ public class SettingsViewModel
     [Display(Name = "Email")]
     public string Email { get; set; } = string.Empty;
 
-    public string CurrencyCode { get; set; } = "USD";
+    [Required(ErrorMessage = "Currency is required.")]
+    [RegularExpression("^(USD|GEL)$", ErrorMessage = "Choose USD or GEL.")]
+    [Display(Name = "Currency")]
+    public string CurrencyCode { get; set; } = CurrencyService.DefaultCurrencyCode;
 
     public bool TrialConversionAlerts { get; set; } = true;
 

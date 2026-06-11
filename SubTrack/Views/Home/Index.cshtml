@@ -12,7 +12,7 @@
             <h1>Every subscription, <span>under one calm dashboard.</span></h1>
             <p>SubTrack tracks recurring spend, projects your annual cost, and warns you the moment a free trial is about to convert so you only pay for what you actually use.</p>
             <div class="landing-hero-actions">
-                <a asp-controller="Account" asp-action="Register" class="landing-primary">Start tracking free <span aria-hidden="true">-&gt;</span></a>
+                <a asp-controller="Account" asp-action="Register" class="landing-primary">Start tracking free</a>
                 <a href="#features" class="landing-secondary">View live demo</a>
             </div>
             <div class="landing-trust-row" aria-label="Account setup notes">
@@ -85,7 +85,7 @@
     <section class="landing-final-cta">
         <h2>Stop paying for things you forgot you signed up for.</h2>
         <p>Set up SubTrack in minutes and see your real monthly spend tonight.</p>
-        <div class="landing-hero-actions"><a asp-controller="Account" asp-action="Register" class="landing-primary">Get started free <span aria-hidden="true">-&gt;</span></a><a asp-controller="Account" asp-action="Login" class="landing-secondary">Sign in</a></div>
+        <div class="landing-hero-actions"><a asp-controller="Account" asp-action="Register" class="landing-primary">Get started free</a><a asp-controller="Account" asp-action="Login" class="landing-secondary">Sign in</a></div>
     </section>
 
     <footer class="landing-footer">
@@ -120,12 +120,12 @@ else
     <section class="overview-kpis" aria-label="Dashboard key metrics">
         <article class="overview-card kpi-card-v2">
             <span>Monthly spend</span>
-            <strong>@Model.TotalMonthlySpend.ToString("C")</strong>
+            <strong>@CurrencyService.Format(Model.TotalMonthlySpend, Model.CurrencyCode)</strong>
             <em class="positive">Active monthly total</em>
         </article>
         <article class="overview-card kpi-card-v2">
             <span>Projected annual</span>
-            <strong>@Model.ProjectedAnnualSpend.ToString("C0")</strong>
+            <strong>@CurrencyService.Format(Model.ProjectedAnnualSpend, Model.CurrencyCode, 0)</strong>
             <em>Based on active plans</em>
         </article>
         <article class="overview-card kpi-card-v2">
@@ -165,7 +165,7 @@ else
                         <div class="category-row-v2">
                             <div class="category-meta-v2">
                                 <span>@category.Category</span>
-                                <strong>@category.MonthlySpend.ToString("C")</strong>
+                                <strong>@CurrencyService.Format(category.MonthlySpend, Model.CurrencyCode)</strong>
                             </div>
                             <div class="category-track-v2" aria-hidden="true">
                                 <div class="category-fill-v2" style="width: @width%"></div>
@@ -257,7 +257,7 @@ else
                             <td>@subscription.Category</td>
                             <td><span class="status-pill active">Active</span></td>
                             <td>@subscription.BillingCycle</td>
-                            <td><strong>@subscription.Price.ToString("C")</strong></td>
+                            <td><strong>@CurrencyService.Format(subscription.Price, subscription.CurrencyCode)</strong></td>
                             <td>@subscription.NextBillingDate.ToString("MMM d, yyyy")</td>
                             <td class="text-end">
                                 <a asp-controller="Subscriptions" asp-action="Edit" asp-route-id="@subscription.Id" class="table-link">Edit</a>

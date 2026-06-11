@@ -4,6 +4,8 @@ namespace SubTrack.ViewModels.Dashboard;
 
 public class DashboardViewModel
 {
+    public string CurrencyCode { get; set; } = "USD";
+
     public decimal TotalMonthlySpend { get; set; }
 
     public decimal ProjectedAnnualSpend { get; set; }

@@ -116,7 +116,8 @@
   text-transform: uppercase;
 }
 
-.settings-form-grid input {
+.settings-form-grid input,
+.settings-form-grid select {
   min-height: 2.55rem;
   border: 1px solid var(--st-border-strong);
   border-radius: .7rem;
@@ -124,6 +125,27 @@
   background: var(--st-input-bg);
   color: var(--st-text);
   font-weight: 750;
+}
+
+.settings-form-grid select {
+  appearance: none;
+  padding-right: 2.6rem;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--st-muted) 50%),
+    linear-gradient(135deg, var(--st-muted) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.05rem) 50%,
+    calc(100% - .78rem) 50%;
+  background-size: .32rem .32rem, .32rem .32rem;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+.settings-form-grid input:focus,
+.settings-form-grid select:focus {
+  border-color: var(--st-primary);
+  box-shadow: 0 0 0 .18rem rgba(109, 112, 255, .2);
+  outline: none;
 }
 
 .settings-toggle-list {
@@ -280,7 +302,8 @@
   font-weight: 750;
 }
 
-.settings-form-grid input.input-validation-error {
+.settings-form-grid input.input-validation-error,
+.settings-form-grid select.input-validation-error {
   border-color: rgba(239, 68, 68, .72);
 }
 

@@ -18,7 +18,7 @@
     </p>
     <dl class="row mb-0">
         <dt class="col-sm-3">Price</dt>
-        <dd class="col-sm-9">@Model.Price.ToString("0.00") @Model.CurrencyCode / @Model.BillingCycle</dd>
+        <dd class="col-sm-9">@CurrencyService.Format(Model.Price, Model.CurrencyCode) / @Model.BillingCycle</dd>
         <dt class="col-sm-3">Next billing date</dt>
         <dd class="col-sm-9">@Model.NextBillingDate.ToString("MMM d, yyyy")</dd>
         <dt class="col-sm-3">Status</dt>

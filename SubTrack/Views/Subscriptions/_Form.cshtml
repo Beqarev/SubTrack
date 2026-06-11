@@ -48,7 +48,10 @@
 
         <div class="form-field">
             <label asp-for="CurrencyCode"></label>
-            <input asp-for="CurrencyCode" maxlength="3" />
+            <select asp-for="CurrencyCode">
+                <option value="USD">USD - US Dollar</option>
+                <option value="GEL">GEL - Georgian Lari</option>
+            </select>
             <span asp-validation-for="CurrencyCode"></span>
         </div>
 

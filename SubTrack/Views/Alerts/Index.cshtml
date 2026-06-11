@@ -53,7 +53,7 @@
                         <div class="alert-card warning-card">
                             <div>
                                 <h3>@trial.SubscriptionName trial ends in @trial.DaysRemaining @(trial.DaysRemaining == 1 ? "day" : "days")</h3>
-                                <p>Converts to @trial.ConversionPrice.ToString("C") / month on the next billing date.</p>
+                                <p>Converts to @CurrencyService.Format(trial.ConversionPrice, trial.CurrencyCode) / month on the next billing date.</p>
                             </div>
                             <div class="alert-card-side">
                                 <span>@trial.TrialEndDate.ToString("MMM dd, yyyy")</span>
@@ -85,7 +85,7 @@
                         <div class="alert-card renewal-card">
                             <div>
                                 <h3>@renewal.SubscriptionName renews soon</h3>
-                                <p>@renewal.Amount.ToString("C") will be charged on @renewal.NextBillingDate.ToString("MMM d, yyyy").</p>
+                                <p>@CurrencyService.Format(renewal.Amount, renewal.CurrencyCode) will be charged on @renewal.NextBillingDate.ToString("MMM d, yyyy").</p>
                             </div>
                             <div class="alert-card-side">
                                 <span>@DisplayName(renewal.BillingCycle)</span>

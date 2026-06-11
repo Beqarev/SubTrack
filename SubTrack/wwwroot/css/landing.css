@@ -122,7 +122,6 @@
 }
 .landing-secondary:hover { border-color: var(--st-primary); color: var(--st-text); }
 .landing-trust-row { display: flex; flex-wrap: wrap; gap: 1.4rem; color: var(--st-muted); font-weight: 650; }
-.landing-trust-row span::before { color: var(--st-success); content: "+ "; }
 
 .landing-dashboard-card {
   display: grid;

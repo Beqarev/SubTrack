@@ -10,5 +10,9 @@ public class ApplicationUser : IdentityUser
     [Display(Name = "Full Name")]
     public string FullName { get; set; } = string.Empty;
 
+    [Required]
+    [StringLength(3, MinimumLength = 3)]
+    public string CurrencyCode { get; set; } = "USD";
+
     public ICollection<Subscription> Subscriptions { get; set; } = [];
 }

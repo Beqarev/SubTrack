@@ -29,17 +29,17 @@
     <section class="analytics-kpis" aria-label="Analytics summary">
         <article class="analytics-kpi-card">
             <span>Avg Monthly</span>
-            <strong>@Model.AverageMonthlySpend.ToString("C")</strong>
+            <strong>@CurrencyService.Format(Model.AverageMonthlySpend, Model.CurrencyCode)</strong>
             <em>@(Model.HasData ? "Normalized cost" : "No active spend")</em>
         </article>
         <article class="analytics-kpi-card">
             <span>Highest Month</span>
-            <strong>@Model.HighestMonthlySpend.ToString("C")</strong>
+            <strong>@CurrencyService.Format(Model.HighestMonthlySpend, Model.CurrencyCode)</strong>
             <em>@(string.IsNullOrWhiteSpace(Model.HighestMonthLabel) ? "No month yet" : Model.HighestMonthLabel)</em>
         </article>
         <article class="analytics-kpi-card">
             <span>Annualized</span>
-            <strong>@Model.AnnualizedSpend.ToString("C0")</strong>
+            <strong>@CurrencyService.Format(Model.AnnualizedSpend, Model.CurrencyCode, 0)</strong>
             <em>Based on active plans</em>
         </article>
     </section>
@@ -93,7 +93,7 @@
                 <div class="panel-heading compact">
                     <div>
                         <h2>Category split</h2>
-                        <p>@Model.CurrentMonthlySpend.ToString("C") / month</p>
+                        <p>@CurrencyService.Format(Model.CurrentMonthlySpend, Model.CurrencyCode) / month</p>
                     </div>
                 </div>
                 <div class="category-stack" aria-hidden="true">
@@ -107,7 +107,7 @@
                     {
                         <div class="category-row">
                             <span>@DisplayName(category.Category)</span>
-                            <strong>@category.MonthlySpend.ToString("C")</strong>
+                            <strong>@CurrencyService.Format(category.MonthlySpend, Model.CurrencyCode)</strong>
                         </div>
                     }
                 </div>
@@ -132,7 +132,7 @@
                             <strong>@service.Name</strong>
                             <span class="top-service-bar"><span style="width: @service.ShareOfHighest.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)%"></span></span>
                         </span>
-                        <span class="top-service-cost">@service.MonthlyCost.ToString("C")/mo</span>
+                        <span class="top-service-cost">@CurrencyService.Format(service.MonthlyCost, Model.CurrencyCode)/mo</span>
                     </a>
                 }
             </div>

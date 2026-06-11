@@ -18,6 +18,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(user => user.FullName)
                 .HasMaxLength(120)
                 .IsRequired();
+
+            entity.Property(user => user.CurrencyCode)
+                .HasMaxLength(3)
+                .HasDefaultValue("USD")
+                .IsRequired();
         });
 
         builder.Entity<Subscription>(entity =>

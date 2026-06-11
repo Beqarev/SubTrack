@@ -12,6 +12,7 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
 
     public async Task<DashboardViewModel> GetDashboardAsync(string userId)
     {
+        var displayCurrencyCode = await GetDisplayCurrencyCodeAsync(userId);
         var subscriptions = await context.Subscriptions
             .AsNoTracking()
             .Where(subscription => subscription.ApplicationUserId == userId)
@@ -35,15 +36,16 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                 SubscriptionId = subscription.Id,
                 SubscriptionName = subscription.Name,
                 NextBillingDate = subscription.NextBillingDate,
-                Amount = subscription.Price,
-                CurrencyCode = subscription.CurrencyCode
+                Amount = Convert(subscription.Price, subscription.CurrencyCode, displayCurrencyCode),
+                CurrencyCode = displayCurrencyCode
             })
             .ToList();
 
         return new DashboardViewModel
         {
-            TotalMonthlySpend = activeSubscriptions.Sum(subscription => subscription.MonthlyCost),
-            ProjectedAnnualSpend = activeSubscriptions.Sum(subscription => subscription.AnnualCost),
+            CurrencyCode = displayCurrencyCode,
+            TotalMonthlySpend = activeSubscriptions.Sum(subscription => Convert(subscription.MonthlyCost, subscription.CurrencyCode, displayCurrencyCode)),
+            ProjectedAnnualSpend = activeSubscriptions.Sum(subscription => Convert(subscription.AnnualCost, subscription.CurrencyCode, displayCurrencyCode)),
             ActiveSubscriptionCount = activeSubscriptions.Count,
             PausedSubscriptionCount = subscriptions.Count(subscription => subscription.Status == SubscriptionStatus.Paused),
             UpcomingBillCount = upcomingBills.Count,
@@ -52,7 +54,8 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                 .Select(group => new CategorySpendViewModel
                 {
                     Category = group.Key,
-                    MonthlySpend = group.Sum(subscription => subscription.MonthlyCost),
+                    MonthlySpend = group.Sum(subscription => Convert(subscription.MonthlyCost, subscription.CurrencyCode, displayCurrencyCode)),
+                    CurrencyCode = displayCurrencyCode,
                     SubscriptionCount = group.Count()
                 })
                 .OrderByDescending(category => category.MonthlySpend)
@@ -81,14 +84,14 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                     Name = subscription.Name,
                     Category = subscription.Category,
                     BillingCycle = subscription.BillingCycle,
-                    Price = subscription.Price,
-                    CurrencyCode = subscription.CurrencyCode,
+                    Price = Convert(subscription.Price, subscription.CurrencyCode, displayCurrencyCode),
+                    CurrencyCode = displayCurrencyCode,
                     Status = subscription.Status,
                     NextBillingDate = subscription.NextBillingDate,
                     IsFreeTrial = subscription.IsFreeTrial,
                     TrialDaysRemaining = subscription.TrialDaysRemaining,
-                    MonthlyCost = subscription.MonthlyCost,
-                    AnnualCost = subscription.AnnualCost,
+                    MonthlyCost = Convert(subscription.MonthlyCost, subscription.CurrencyCode, displayCurrencyCode),
+                    AnnualCost = Convert(subscription.AnnualCost, subscription.CurrencyCode, displayCurrencyCode),
                     IsTrialExpiringSoon = subscription.IsTrialExpiringSoon,
                     IsBillDueSoon = subscription.IsBillDueSoon
                 })
@@ -96,4 +99,18 @@ public class DashboardService(ApplicationDbContext context) : IDashboardService
                 .ToList()
         };
     }
+
+    private async Task<string> GetDisplayCurrencyCodeAsync(string userId)
+    {
+        var currencyCode = await context.Users
+            .AsNoTracking()
+            .Where(user => user.Id == userId)
+            .Select(user => user.CurrencyCode)
+            .FirstOrDefaultAsync();
+
+        return CurrencyService.Normalize(currencyCode);
+    }
+
+    private static decimal Convert(decimal amount, string fromCurrencyCode, string toCurrencyCode) =>
+        CurrencyService.Convert(amount, fromCurrencyCode, toCurrencyCode);
 }

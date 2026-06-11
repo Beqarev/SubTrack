@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SubTrack.Models;
 using SubTrack.ViewModels.Account;
+using SubTrack.Services;
 
 namespace SubTrack.Controllers;
 
@@ -27,11 +28,20 @@ public class AccountController(
             return View(model);
         }
 
+        var email = model.Email.Trim();
+        var existingUser = await userManager.FindByEmailAsync(email);
+        if (existingUser is not null)
+        {
+            ModelState.AddModelError(nameof(model.Email), "An account with this email already exists.");
+            return View(model);
+        }
+
         var user = new ApplicationUser
         {
             FullName = model.FullName.Trim(),
-            UserName = model.Email.Trim(),
-            Email = model.Email.Trim()
+            UserName = email,
+            Email = email,
+            CurrencyCode = CurrencyService.DefaultCurrencyCode
         };
 
         var result = await userManager.CreateAsync(user, model.Password);

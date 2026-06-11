@@ -4,6 +4,8 @@ namespace SubTrack.ViewModels.Analytics;
 
 public class AnalyticsViewModel
 {
+    public string CurrencyCode { get; set; } = "USD";
+
     public decimal AverageMonthlySpend { get; set; }
 
     public decimal HighestMonthlySpend { get; set; }

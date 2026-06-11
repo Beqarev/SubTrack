@@ -14,6 +14,7 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
         SubscriptionStatus? status = null,
         bool trialOnly = false)
     {
+        var displayCurrencyCode = await GetDisplayCurrencyCodeAsync(userId);
         var allSubscriptions = await context.Subscriptions
             .AsNoTracking()
             .Where(subscription => subscription.ApplicationUserId == userId)
@@ -52,11 +53,12 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
             Category = category,
             Status = status,
             TrialOnly = trialOnly,
+            CurrencyCode = displayCurrencyCode,
             AllCount = allSubscriptions.Count,
             ActiveCount = allSubscriptions.Count(subscription => subscription.Status == SubscriptionStatus.Active),
             PausedCount = allSubscriptions.Count(subscription => subscription.Status == SubscriptionStatus.Paused),
             TrialCount = allSubscriptions.Count(subscription => subscription.IsFreeTrial),
-            Subscriptions = filteredSubscriptions.Select(MapToListItem).ToList()
+            Subscriptions = filteredSubscriptions.Select(subscription => MapToListItem(subscription, displayCurrencyCode)).ToList()
         };
     }
 
@@ -169,7 +171,18 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
         return createdCount;
     }
 
-    private static SubscriptionListItemViewModel MapToListItem(Subscription subscription)
+    private async Task<string> GetDisplayCurrencyCodeAsync(string userId)
+    {
+        var currencyCode = await context.Users
+            .AsNoTracking()
+            .Where(user => user.Id == userId)
+            .Select(user => user.CurrencyCode)
+            .FirstOrDefaultAsync();
+
+        return CurrencyService.Normalize(currencyCode);
+    }
+
+    private static SubscriptionListItemViewModel MapToListItem(Subscription subscription, string displayCurrencyCode)
     {
         return new SubscriptionListItemViewModel
         {
@@ -177,14 +190,14 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
             Name = subscription.Name,
             Category = subscription.Category,
             BillingCycle = subscription.BillingCycle,
-            Price = subscription.Price,
-            CurrencyCode = subscription.CurrencyCode,
+            Price = CurrencyService.Convert(subscription.Price, subscription.CurrencyCode, displayCurrencyCode),
+            CurrencyCode = displayCurrencyCode,
             Status = subscription.Status,
             NextBillingDate = subscription.NextBillingDate,
             IsFreeTrial = subscription.IsFreeTrial,
             TrialDaysRemaining = subscription.TrialDaysRemaining,
-            MonthlyCost = subscription.MonthlyCost,
-            AnnualCost = subscription.AnnualCost,
+            MonthlyCost = CurrencyService.Convert(subscription.MonthlyCost, subscription.CurrencyCode, displayCurrencyCode),
+            AnnualCost = CurrencyService.Convert(subscription.AnnualCost, subscription.CurrencyCode, displayCurrencyCode),
             IsTrialExpiringSoon = subscription.IsTrialExpiringSoon,
             IsBillDueSoon = subscription.IsBillDueSoon
         };
@@ -200,7 +213,7 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
             Category = subscription.Category,
             BillingCycle = subscription.BillingCycle,
             Price = subscription.Price,
-            CurrencyCode = subscription.CurrencyCode,
+            CurrencyCode = CurrencyService.Normalize(subscription.CurrencyCode),
             Status = subscription.Status,
             PaymentMethod = subscription.PaymentMethod,
             StartDate = subscription.StartDate,
@@ -221,7 +234,7 @@ public class SubscriptionService(ApplicationDbContext context) : ISubscriptionSe
         subscription.Category = model.Category;
         subscription.BillingCycle = model.BillingCycle;
         subscription.Price = model.Price;
-        subscription.CurrencyCode = model.CurrencyCode.Trim().ToUpperInvariant();
+        subscription.CurrencyCode = CurrencyService.Normalize(model.CurrencyCode);
         subscription.Status = model.Status;
         subscription.PaymentMethod = model.PaymentMethod;
         subscription.StartDate = model.StartDate.Date;

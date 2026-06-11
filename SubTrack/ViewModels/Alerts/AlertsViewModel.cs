@@ -2,6 +2,8 @@ namespace SubTrack.ViewModels.Alerts;
 
 public class AlertsViewModel
 {
+    public string CurrencyCode { get; set; } = "USD";
+
     public int TrialsEndingCount { get; set; }
 
     public int UpcomingRenewalsCount { get; set; }

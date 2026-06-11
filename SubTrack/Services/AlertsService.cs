@@ -11,6 +11,7 @@ public class AlertsService(ApplicationDbContext context) : IAlertsService
 
     public async Task<AlertsViewModel> GetAlertsAsync(string userId)
     {
+        var displayCurrencyCode = await GetDisplayCurrencyCodeAsync(userId);
         var today = DateTime.Today;
         var renewalWindowEnd = today.AddDays(RenewalWindowDays);
 
@@ -33,8 +34,8 @@ public class AlertsService(ApplicationDbContext context) : IAlertsService
             {
                 SubscriptionId = subscription.Id,
                 SubscriptionName = subscription.Name,
-                ConversionPrice = subscription.Price,
-                CurrencyCode = subscription.CurrencyCode,
+                ConversionPrice = Convert(subscription.Price, subscription.CurrencyCode, displayCurrencyCode),
+                CurrencyCode = displayCurrencyCode,
                 TrialEndDate = subscription.TrialEndDate!.Value,
                 DaysRemaining = subscription.TrialDaysRemaining ?? 0
             })
@@ -50,17 +51,18 @@ public class AlertsService(ApplicationDbContext context) : IAlertsService
             {
                 SubscriptionId = subscription.Id,
                 SubscriptionName = subscription.Name,
-                Amount = subscription.Price,
-                CurrencyCode = subscription.CurrencyCode,
+                Amount = Convert(subscription.Price, subscription.CurrencyCode, displayCurrencyCode),
+                CurrencyCode = displayCurrencyCode,
                 BillingCycle = subscription.BillingCycle,
                 NextBillingDate = subscription.NextBillingDate
             })
             .ToList();
 
-        var anomaly = BuildSpendAnomaly(activeSubscriptions);
+        var anomaly = BuildSpendAnomaly(activeSubscriptions, displayCurrencyCode);
 
         return new AlertsViewModel
         {
+            CurrencyCode = displayCurrencyCode,
             TrialsEndingCount = trialCountdowns.Count,
             UpcomingRenewalsCount = upcomingRenewals.Count,
             SpendAnomalyCount = anomaly is null ? 0 : 1,
@@ -72,14 +74,25 @@ public class AlertsService(ApplicationDbContext context) : IAlertsService
         };
     }
 
-    private static SpendAnomalyAlertViewModel? BuildSpendAnomaly(IReadOnlyList<Subscription> activeSubscriptions)
+    private async Task<string> GetDisplayCurrencyCodeAsync(string userId)
+    {
+        var currencyCode = await context.Users
+            .AsNoTracking()
+            .Where(user => user.Id == userId)
+            .Select(user => user.CurrencyCode)
+            .FirstOrDefaultAsync();
+
+        return CurrencyService.Normalize(currencyCode);
+    }
+
+    private static SpendAnomalyAlertViewModel? BuildSpendAnomaly(IReadOnlyList<Subscription> activeSubscriptions, string displayCurrencyCode)
     {
         var categoryGroups = activeSubscriptions
             .GroupBy(subscription => subscription.Category)
             .Select(group => new
             {
                 Category = group.Key,
-                MonthlySpend = group.Sum(subscription => subscription.MonthlyCost),
+                MonthlySpend = group.Sum(subscription => Convert(subscription.MonthlyCost, subscription.CurrencyCode, displayCurrencyCode)),
                 Count = group.Count()
             })
             .OrderByDescending(group => group.MonthlySpend)
@@ -101,7 +114,10 @@ public class AlertsService(ApplicationDbContext context) : IAlertsService
         return new SpendAnomalyAlertViewModel
         {
             Title = $"{topCategory.Category} spend is unusually high",
-            Detail = $"{topCategory.Count} active subscriptions account for {topCategory.MonthlySpend:C} per month."
+            Detail = $"{topCategory.Count} active subscriptions account for {CurrencyService.Format(topCategory.MonthlySpend, displayCurrencyCode)} per month."
         };
     }
+
+    private static decimal Convert(decimal amount, string fromCurrencyCode, string toCurrencyCode) =>
+        CurrencyService.Convert(amount, fromCurrencyCode, toCurrencyCode);
 }

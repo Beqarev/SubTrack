@@ -37,7 +37,7 @@ public class Subscription : IValidatableObject
     public decimal Price { get; set; }
 
     [Required(ErrorMessage = "Currency is required.")]
-    [RegularExpression("^[A-Z]{3}$", ErrorMessage = "Currency must be a 3-letter ISO code, such as USD, EUR, or GEL.")]
+    [RegularExpression("^(USD|GEL)$", ErrorMessage = "Choose USD or GEL.")]
     [StringLength(3, MinimumLength = 3)]
     [Display(Name = "Currency")]
     public string CurrencyCode { get; set; } = "USD";

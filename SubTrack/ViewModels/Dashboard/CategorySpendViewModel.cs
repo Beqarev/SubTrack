@@ -8,5 +8,7 @@ public class CategorySpendViewModel
 
     public decimal MonthlySpend { get; set; }
 
+    public string CurrencyCode { get; set; } = "USD";
+
     public int SubscriptionCount { get; set; }
 }

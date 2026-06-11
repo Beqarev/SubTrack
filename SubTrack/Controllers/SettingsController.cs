@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SubTrack.Models;
 using SubTrack.ViewModels.Settings;
+using SubTrack.Services;
 
 namespace SubTrack.Controllers;
 
@@ -24,7 +25,7 @@ public class SettingsController(
     {
         var user = await GetCurrentUserAsync();
 
-        model.CurrencyCode = "USD";
+        model.CurrencyCode = CurrencyService.Normalize(model.CurrencyCode);
         model.TwoFactorEnabled = user.TwoFactorEnabled;
 
         if (!ModelState.IsValid)
@@ -43,6 +44,7 @@ public class SettingsController(
         }
 
         user.FullName = fullName;
+        user.CurrencyCode = CurrencyService.Normalize(model.CurrencyCode);
         user.Email = email;
         user.UserName = email;
         user.NormalizedEmail = userManager.NormalizeEmail(email);
@@ -77,6 +79,7 @@ public class SettingsController(
         {
             FullName = user.FullName,
             Email = user.Email ?? string.Empty,
+            CurrencyCode = CurrencyService.Normalize(user.CurrencyCode),
             TwoFactorEnabled = user.TwoFactorEnabled
         };
     }

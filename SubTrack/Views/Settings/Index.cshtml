@@ -43,9 +43,13 @@
                             <input asp-for="Email" autocomplete="email" />
                             <small asp-validation-for="Email"></small>
                         </label>
-                        <label>
+                        <label asp-for="CurrencyCode">
                             <span>Currency</span>
-                            <input value="@Model.CurrencyCode" readonly aria-readonly="true" />
+                            <select asp-for="CurrencyCode">
+                                <option value="USD">USD</option>
+                                <option value="GEL">GEL</option>
+                            </select>
+                            <small asp-validation-for="CurrencyCode"></small>
                         </label>
                     </div>
                     <div class="settings-form-actions">

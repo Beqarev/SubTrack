@@ -12,7 +12,7 @@
         </div>
         <div class="subscriptions-heading-actions">
             <button type="button" class="btn btn-ghost" disabled>Export</button>
-            <a asp-action="Create" class="btn btn-primary">+ New Subscription</a>
+            <a asp-action="Create" class="btn btn-primary">New Subscription</a>
         </div>
     </div>
 
@@ -85,7 +85,7 @@
                 <h2>No subscriptions found</h2>
                 <p>Add your first subscription or adjust the current filters.</p>
                 <div class="subscriptions-empty-actions">
-                    <a asp-action="Create" class="btn btn-primary">+ New Subscription</a>
+                    <a asp-action="Create" class="btn btn-primary">New Subscription</a>
                     @if (Model.TotalCount == 0)
                     {
                         <form asp-action="SeedDemoData" method="post">
@@ -140,7 +140,7 @@
                             <td class="table-muted">@DisplayName(subscription.Category)</td>
                             <td><span class="status-pill @statusClass">@statusText</span></td>
                             <td class="table-muted">@DisplayName(subscription.BillingCycle)</td>
-                            <td class="table-strong">@subscription.Price.ToString("C")</td>
+                            <td class="table-strong">@CurrencyService.Format(subscription.Price, subscription.CurrencyCode)</td>
                             <td>
                                 <span class="table-date">@subscription.NextBillingDate.ToString("MMM d, yyyy")</span>
                                 @if (subscription.IsBillDueSoon)
@@ -171,7 +171,7 @@
             </div>
             <div class="subscriptions-footer">
                 <span>Showing @Model.FilteredCount of @Model.TotalCount</span>
-                <span>Monthly active total @Model.ActiveMonthlySpend.ToString("C")</span>
+                <span>Monthly active total @CurrencyService.Format(Model.ActiveMonthlySpend, Model.CurrencyCode)</span>
             </div>
         }
     </section>
