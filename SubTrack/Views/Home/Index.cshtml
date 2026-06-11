@@ -6,15 +6,44 @@
 
 @if (User.Identity?.IsAuthenticated != true || Model is null)
 {
-    <section class="guest-panel dashboard-auth-card">
-        <p class="section-eyebrow">Smart Subscription Management</p>
-        <h1>Track recurring services, free trials, and monthly commitments.</h1>
-        <p class="text-muted mb-0">
-            Sign in to see your dark dashboard, manage subscriptions, and catch trial conversions before they charge.
-        </p>
-        <div class="guest-actions">
-            <a asp-controller="Account" asp-action="Register" class="btn btn-primary">Create account</a>
-            <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary">Log in</a>
+    <section class="guest-dashboard">
+        <div class="guest-hero-panel">
+            <div class="guest-hero-copy">
+                <h1>Track recurring services, free trials, and monthly commitments.</h1>
+            </div>
+            <div class="guest-preview-panel" aria-label="Dashboard preview">
+                <div class="guest-preview-topline">
+                    <span>Monthly spend</span>
+                    <strong>$0.00</strong>
+                </div>
+                <div class="guest-preview-bars">
+                    <span style="width: 84%"></span>
+                    <span style="width: 46%"></span>
+                    <span style="width: 62%"></span>
+                </div>
+                <div class="guest-preview-alert">
+                    <span>Trial alerts</span>
+                    <strong>Ready when you add services</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="guest-feature-grid" aria-label="SubTrack highlights">
+            <article class="guest-feature-card">
+                <span>01</span>
+                <strong>Renewal calendar</strong>
+                <p>See what is due next and avoid surprise charges.</p>
+            </article>
+            <article class="guest-feature-card">
+                <span>02</span>
+                <strong>Trial monitoring</strong>
+                <p>Keep free trials visible before they convert.</p>
+            </article>
+            <article class="guest-feature-card">
+                <span>03</span>
+                <strong>Spend insight</strong>
+                <p>Group subscriptions by category and spot changes fast.</p>
+            </article>
         </div>
     </section>
 }

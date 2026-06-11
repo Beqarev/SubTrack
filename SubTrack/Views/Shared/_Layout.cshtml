@@ -3,6 +3,7 @@
 @inject UserManager<ApplicationUser> UserManager
 @{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
     var isSignedIn = SignInManager.IsSignedIn(User);
     var userName = User.Identity?.Name ?? "Guest";
     var userInitial = string.IsNullOrWhiteSpace(userName) ? "S" : userName.Trim()[0].ToString().ToUpperInvariant();
@@ -38,23 +39,22 @@
     <link rel="stylesheet" href="~/css/app-shell.css" asp-append-version="true"/>
 </head>
 <body>
-<div class="app-shell">
-    <aside class="sidebar" aria-label="Primary navigation">
-        <a class="brand-lockup" asp-controller="Home" asp-action="Index">
-            <span class="brand-mark">S</span>
-            <span>
-                <span class="brand-title">SubTrack</span>
-                <span class="brand-subtitle">Smart Expenses</span>
-            </span>
-        </a>
-
-        <nav class="sidebar-nav">
-            <a class="sidebar-link @(controller == "Home" ? "active" : string.Empty)" asp-controller="Home" asp-action="Index">
-                <span class="nav-left"><span class="nav-icon">D</span> Dashboard</span>
+@if (isSignedIn)
+{
+    <div class="app-shell">
+        <aside class="sidebar" aria-label="Primary navigation">
+            <a class="brand-lockup" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark">S</span>
+                <span>
+                    <span class="brand-title">SubTrack</span>
+                    <span class="brand-subtitle">Smart Expenses</span>
+                </span>
             </a>
 
-            @if (isSignedIn)
-            {
+            <nav class="sidebar-nav">
+                <a class="sidebar-link @(controller == "Home" ? "active" : string.Empty)" asp-controller="Home" asp-action="Index">
+                    <span class="nav-left"><span class="nav-icon">D</span> Dashboard</span>
+                </a>
                 <a class="sidebar-link @(controller == "Subscriptions" ? "active" : string.Empty)" asp-controller="Subscriptions" asp-action="Index">
                     <span class="nav-left"><span class="nav-icon">S</span> Subscriptions</span>
                 </a>
@@ -68,21 +68,9 @@
                 <a class="sidebar-link @(controller == "Settings" ? "active" : string.Empty)" asp-controller="Settings" asp-action="Index">
                     <span class="nav-left"><span class="nav-icon">*</span> Settings</span>
                 </a>
-            }
-            else
-            {
-                <a class="sidebar-link @(controller == "Account" ? "active" : string.Empty)" asp-controller="Account" asp-action="Login">
-                    <span class="nav-left"><span class="nav-icon">L</span> Login</span>
-                </a>
-                <a class="sidebar-link" asp-controller="Account" asp-action="Register">
-                    <span class="nav-left"><span class="nav-icon">+</span> Register</span>
-                </a>
-            }
-        </nav>
+            </nav>
 
-        <div class="sidebar-footer">
-            @if (isSignedIn)
-            {
+            <div class="sidebar-footer">
                 <div class="trial-mini-card">
                     <span>Trial monitoring</span>
                     <strong>Free trial alerts</strong>
@@ -95,24 +83,38 @@
                 <form asp-controller="Account" asp-action="Logout" method="post">
                     <button type="submit" class="sidebar-button">Logout</button>
                 </form>
-            }
-            else
-            {
-                <div class="trial-mini-card">
-                    <span>Get started</span>
-                    <strong>Track subscriptions</strong>
-                    <em>No surprises</em>
-                </div>
-            }
-        </div>
-    </aside>
+            </div>
+        </aside>
 
-    <main class="app-main">
-        <div class="content-frame">
+        <main class="app-main">
+            <div class="content-frame">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+}
+else
+{
+    <div class="public-shell">
+        <header class="public-topbar">
+            <a class="brand-lockup public-brand" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark">S</span>
+                <span>
+                    <span class="brand-title">SubTrack</span>
+                    <span class="brand-subtitle">Smart Expenses</span>
+                </span>
+            </a>
+            <nav class="public-actions" aria-label="Account navigation">
+                <a class="public-login @(controller == "Account" && action == "Login" ? "active" : string.Empty)" asp-controller="Account" asp-action="Login">Log in</a>
+                <a class="public-register @(controller == "Account" && action == "Register" ? "active" : string.Empty)" asp-controller="Account" asp-action="Register">Register</a>
+            </nav>
+        </header>
+
+        <main class="public-main">
             @RenderBody()
-        </div>
-    </main>
-</div>
+        </main>
+    </div>
+}
 
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

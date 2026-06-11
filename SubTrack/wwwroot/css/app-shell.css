@@ -442,7 +442,7 @@ dd {
     padding: .65rem .75rem;
     font-size: .86rem;
   }
-
+}
 
 .auth-page {
   display: grid;
@@ -579,4 +579,97 @@ dd {
 
 .auth-alt a:hover {
   color: var(--st-primary-strong);
+}
+
+
+.public-shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 78% 8%, var(--st-app-accent-wash), transparent 34rem),
+    var(--st-bg);
+}
+
+.public-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: min(1440px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: 1.35rem 0;
+}
+
+.public-brand {
+  margin-bottom: 0;
+}
+
+.public-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.public-login,
+.public-register {
+  display: inline-flex;
+  min-height: 2.4rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: .7rem;
+  padding: .55rem .95rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.public-login {
+  border: 1px solid var(--st-border-strong);
+  color: var(--st-text);
+}
+
+.public-login:hover,
+.public-login.active {
+  border-color: var(--st-primary);
+  background: rgba(109, 112, 255, .12);
+  color: var(--st-text);
+}
+
+.public-register {
+  border: 1px solid rgba(124, 127, 255, .95);
+  background: linear-gradient(180deg, var(--st-primary-strong), var(--st-primary));
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(109, 112, 255, .18);
+}
+
+.public-register:hover,
+.public-register.active {
+  color: #fff;
+  filter: brightness(1.06);
+}
+
+.public-main {
+  width: min(1440px, calc(100% - 3rem));
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 5rem) 0 4rem;
+}
+
+@media (max-width: 640px) {
+  .public-topbar {
+    width: min(100% - 2rem, 1440px);
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .public-actions {
+    width: 100%;
+  }
+
+  .public-login,
+  .public-register {
+    flex: 1 1 0;
+  }
+
+  .public-main {
+    width: min(100% - 2rem, 1440px);
+    padding-top: 1.5rem;
+  }
 }
