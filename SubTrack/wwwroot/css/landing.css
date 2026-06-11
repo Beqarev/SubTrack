@@ -12,7 +12,7 @@
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 2rem;
-  width: min(1540px, calc(100% - 3rem));
+  width: min(1280px, calc(100% - 7rem));
   margin: 0 auto;
   padding: 1.35rem 0;
   background: rgba(7, 8, 10, .86);
@@ -56,13 +56,13 @@
 .landing-section,
 .landing-final-cta,
 .landing-footer {
-  width: min(1540px, calc(100% - 3rem));
+  width: min(1280px, calc(100% - 7rem));
   margin: 0 auto;
 }
 
 .landing-hero {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(540px, .92fr);
+  grid-template-columns: minmax(0, .92fr) minmax(500px, .78fr);
   gap: clamp(3rem, 6vw, 6rem);
   align-items: center;
   min-height: calc(100vh - 5.75rem);
@@ -87,7 +87,7 @@
   max-width: 780px;
   margin: 0;
   color: var(--st-text);
-  font-size: clamp(4rem, 7vw, 7.8rem);
+  font-size: clamp(3.6rem, 5.7vw, 6.3rem);
   font-weight: 950;
   letter-spacing: 0;
   line-height: .98;
@@ -227,7 +227,7 @@
   .landing-hero,
   .landing-section,
   .landing-final-cta,
-  .landing-footer { width: min(100% - 2rem, 1540px); }
+  .landing-footer { width: min(100% - 2rem, 1280px); }
   .public-actions { width: 100%; justify-content: stretch; }
   .public-login,
   .public-register { flex: 1 1 0; }
