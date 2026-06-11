@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="~/css/stage6-polish.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/SubTrack.styles.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/app-shell.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true"/>
 </head>
 <body>
 @if (isSignedIn)
@@ -104,9 +105,14 @@ else
                     <span class="brand-subtitle">Smart Expenses</span>
                 </span>
             </a>
+            <nav class="public-nav" aria-label="Landing page sections">
+                <a asp-controller="Home" asp-action="Index" asp-fragment="features">Features</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="how-it-works">How it works</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="faq">FAQ</a>
+            </nav>
             <nav class="public-actions" aria-label="Account navigation">
-                <a class="public-login @(controller == "Account" && action == "Login" ? "active" : string.Empty)" asp-controller="Account" asp-action="Login">Log in</a>
-                <a class="public-register @(controller == "Account" && action == "Register" ? "active" : string.Empty)" asp-controller="Account" asp-action="Register">Register</a>
+                <a class="public-login @(controller == "Account" && action == "Login" ? "active" : string.Empty)" asp-controller="Account" asp-action="Login">Sign in</a>
+                <a class="public-register @(controller == "Account" && action == "Register" ? "active" : string.Empty)" asp-controller="Account" asp-action="Register">Get started <span aria-hidden="true">-></span></a>
             </nav>
         </header>
 

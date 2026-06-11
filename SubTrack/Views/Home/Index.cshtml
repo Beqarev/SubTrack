@@ -6,46 +6,92 @@
 
 @if (User.Identity?.IsAuthenticated != true || Model is null)
 {
-    <section class="guest-dashboard">
-        <div class="guest-hero-panel">
-            <div class="guest-hero-copy">
-                <h1>Track recurring services, free trials, and monthly commitments.</h1>
+    <section class="landing-hero" id="top">
+        <div class="landing-hero-copy">
+            <span class="landing-pill">New: Smart Trial Alert Engine</span>
+            <h1>Every subscription, <span>under one calm dashboard.</span></h1>
+            <p>SubTrack tracks recurring spend, projects your annual cost, and warns you the moment a free trial is about to convert so you only pay for what you actually use.</p>
+            <div class="landing-hero-actions">
+                <a asp-controller="Account" asp-action="Register" class="landing-primary">Start tracking free <span aria-hidden="true">-&gt;</span></a>
+                <a href="#features" class="landing-secondary">View live demo</a>
             </div>
-            <div class="guest-preview-panel" aria-label="Dashboard preview">
-                <div class="guest-preview-topline">
-                    <span>Monthly spend</span>
-                    <strong>$0.00</strong>
-                </div>
-                <div class="guest-preview-bars">
-                    <span style="width: 84%"></span>
-                    <span style="width: 46%"></span>
-                    <span style="width: 62%"></span>
-                </div>
-                <div class="guest-preview-alert">
-                    <span>Trial alerts</span>
-                    <strong>Ready when you add services</strong>
-                </div>
+            <div class="landing-trust-row" aria-label="Account setup notes">
+                <span>No credit card</span>
+                <span>Free to start</span>
+                <span>Cancel anytime</span>
             </div>
         </div>
 
-        <div class="guest-feature-grid" aria-label="SubTrack highlights">
-            <article class="guest-feature-card">
-                <span>01</span>
-                <strong>Renewal calendar</strong>
-                <p>See what is due next and avoid surprise charges.</p>
-            </article>
-            <article class="guest-feature-card">
-                <span>02</span>
-                <strong>Trial monitoring</strong>
-                <p>Keep free trials visible before they convert.</p>
-            </article>
-            <article class="guest-feature-card">
-                <span>03</span>
-                <strong>Spend insight</strong>
-                <p>Group subscriptions by category and spot changes fast.</p>
-            </article>
+        <div class="landing-dashboard-card" aria-label="SubTrack dashboard preview">
+            <div class="landing-window-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <div class="landing-kpi-grid">
+                <article><span>Monthly</span><strong>$284.40</strong><em>-4.2%</em></article>
+                <article><span>Annual</span><strong>$3,412</strong><em>Projected</em></article>
+                <article><span>Trials</span><strong>3</strong><em class="warning">Needs attention</em></article>
+            </div>
+            <div class="landing-chart-card">
+                <div><strong>Spend by category</strong><span>30D</span></div>
+                <div class="landing-bars" aria-hidden="true">
+                    <span style="height: 42%"></span><span style="height: 72%"></span><span style="height: 26%"></span><span style="height: 50%"></span><span style="height: 35%"></span><span style="height: 64%"></span><span style="height: 31%"></span>
+                </div>
+            </div>
+            <div class="landing-alert-card">
+                <span class="landing-alert-icon">!</span>
+                <div><strong>Design tool trial converting</strong><p>$20/mo charge in 22 hours</p></div>
+                <a asp-controller="Account" asp-action="Register">Cancel</a>
+            </div>
         </div>
     </section>
+
+    <section class="landing-logo-strip" aria-label="Example tracked services">
+        <span>Tracks subscriptions from</span><strong>Netflix</strong><strong>Adobe</strong><strong>GitHub</strong><strong>Spotify</strong><strong>Figma</strong><strong>Canva</strong><strong>NYT</strong>
+    </section>
+
+    <section class="landing-section" id="features">
+        <div class="landing-section-heading">
+            <span>Features</span>
+            <h2>Built for people who hate surprise charges.</h2>
+            <p>Three focused tools replace spreadsheets, calendar reminders, and bank-statement deep-dives.</p>
+        </div>
+        <div class="landing-feature-grid">
+            <article><span class="landing-icon">[]</span><h3>Subscription ledger</h3><p>Add a service in seconds. Toggle active or paused. Every charge, cycle, and renewal date stays in one clean grid.</p></article>
+            <article class="featured"><span class="landing-icon">~</span><h3>Live KPIs & forecasts</h3><p>See monthly spend, projected annual cost, and category trends update the moment you change a plan.</p></article>
+            <article><span class="landing-icon">!</span><h3>Smart trial alerts</h3><p>Free trials are tracked with a live countdown so conversion charges do not sneak up on you.</p></article>
+        </div>
+    </section>
+
+    <section class="landing-section" id="how-it-works">
+        <div class="landing-section-heading compact"><span>How it works</span><h2>From chaos to clarity in three steps.</h2></div>
+        <div class="landing-step-grid">
+            <article><span>01</span><h3>Add your subscriptions</h3><p>Drop in anything recurring, then set the cycle, amount, and next bill date.</p></article>
+            <article><span>02</span><h3>Watch your spend</h3><p>KPI cards and category charts show exactly where your money goes each month.</p></article>
+            <article><span>03</span><h3>Get smart alerts</h3><p>SubTrack warns you about trial conversions and unusual spend before the charge hits.</p></article>
+        </div>
+        <div class="landing-metrics" aria-label="SubTrack outcomes">
+            <div><strong>$312</strong><span>Average yearly savings per user</span></div><div><strong>8.4</strong><span>Hidden subscriptions found on average</span></div><div><strong>94%</strong><span>Trials cancelled before conversion</span></div><div><strong>3 min</strong><span>Time to set up your dashboard</span></div>
+        </div>
+    </section>
+
+    <section class="landing-section landing-faq" id="faq">
+        <div class="landing-section-heading centered"><span>FAQ</span><h2>Questions, answered.</h2></div>
+        <div class="landing-faq-list">
+            <article><h3>Do you connect to my bank?</h3><p>No. SubTrack works with manual entries, so your dashboard stays simple and your financial data stays with you.</p></article>
+            <article><h3>How do trial alerts work?</h3><p>Mark a subscription as Trial with its end date. SubTrack surfaces a live countdown so you can act before conversion.</p></article>
+            <article><h3>Can I export my data?</h3><p>Yes. Export the full subscription ledger to CSV any time. Your data is yours.</p></article>
+            <article><h3>Is my data secure?</h3><p>SubTrack uses authenticated accounts and stores only the subscription details you choose to add.</p></article>
+        </div>
+    </section>
+
+    <section class="landing-final-cta">
+        <h2>Stop paying for things you forgot you signed up for.</h2>
+        <p>Set up SubTrack in minutes and see your real monthly spend tonight.</p>
+        <div class="landing-hero-actions"><a asp-controller="Account" asp-action="Register" class="landing-primary">Get started free <span aria-hidden="true">-&gt;</span></a><a asp-controller="Account" asp-action="Login" class="landing-secondary">Sign in</a></div>
+    </section>
+
+    <footer class="landing-footer">
+        <div><span class="brand-mark">S</span><span>(c) 2026 SubTrack. Smart subscription & expense management.</span></div>
+        <nav aria-label="Footer links"><a href="#top">Privacy</a><a href="#top">Terms</a><a href="#top">Contact</a></nav>
+    </footer>
 }
 else
 {
