@@ -16,6 +16,12 @@
     <title>@ViewData["Title"] - SubTrack</title>
     <script>
         (function () {
+            var isSignedIn = @Json.Serialize(isSignedIn);
+            if (!isSignedIn) {
+                document.documentElement.dataset.theme = "midnight";
+                return;
+            }
+
             try {
                 var theme = localStorage.getItem("subtrack-theme");
                 if (theme === "midnight" || theme === "paper") {
